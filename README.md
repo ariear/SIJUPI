@@ -1,0 +1,2 @@
+## Sistem Informasi Penjualan Pupuk dan Alat Tani (SIJUPI)
+SIJUPI adalah aplikasi berbasis terminal yang berguna untuk mendigitalisasi mekanisme penjualan dan pembelian dalam toko pertanian. Aplikasi ini dibuat menggunakan bahasa python dan sebagai tugas akhir dalam mata kuliah algoritma dan pemrograman I.

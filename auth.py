@@ -18,7 +18,7 @@ def addAccount(username = None, password = None, role = None):
     })
     new_account.to_csv('db/account.csv', mode='a', header=False, index=False)
     
-    return "Akun Berhasil Dibuat!"
+    return [username, role]
 
 def login(errorMsg = False):
     os.system('cls')
@@ -43,7 +43,7 @@ def login(errorMsg = False):
             return login("Maaf Username Atau Password Yang Anda Berikan Salah!")
         
         break
-    # print("Berhasil!")
+    
     return [account.iloc[0]["Username"], account.iloc[0]["Role"]]
     
 def register(errorMsg = False, superAdmin = False):
@@ -61,30 +61,24 @@ def register(errorMsg = False, superAdmin = False):
         role = None
 
         if not username:
-            register("Username tidak boleh hanya berupa spasi!")
-            return True
+            return register("Username tidak boleh hanya berupa spasi!")
         
         if len(username) < 3:
-            register("Username Akun Minimal 3 character!")
-            return True
+            return register("Username Akun Minimal 3 character!")
             
         accounts = accountData()
         
         if not accounts[accounts['Username'] == username].empty:
-            register("Username Sudah Digunakan!")
-            return True
+            return register("Username Sudah Digunakan!")
         
         if not password:
-            register("Password tidak boleh hanya berupa spasi!")
-            return True
+            return register("Password tidak boleh hanya berupa spasi!")
 
         if len(password) < 8:
-            register("Password Akun Minimal 8 character!")
-            return True
+            return register("Password Akun Minimal 8 character!")
         
         if password != confirmedPassword:
-            register("Konfirmasi Ulang Password Berbeda Dengan Password Awal!")
-            return True
+            return register("Konfirmasi Ulang Password Berbeda Dengan Password Awal!")
         
         if superAdmin:
             while True:
@@ -127,6 +121,3 @@ def verifikasi_password(password_enkripsi, password):
         hasil_dekripsi += chr(ord(i) - 4)
     
     return True if hasil_dekripsi == password else False
-
-# print(login())
-print(register(superAdmin=True))

@@ -1,5 +1,5 @@
 import os
-from menu import menu_autentikasi, menu_awal
+from menu import menu_awal
 
 def main():
     os.system('cls')

@@ -15,7 +15,7 @@ def menu_awal():
                 menu_auth = menu_autentikasi()
 
                 if len(menu_auth) == 2:
-                    print("MENU TOKO CUY")
+                    menu_utama(menu_auth)
                     return 'gas menu toko'
                 elif menu_auth == 'keluar':
                     return 'keluar'
@@ -46,3 +46,15 @@ def menu_autentikasi():
                 os.system('cls')
                 print('\nInput harus ada di menu dan berupa angka!\n')
                 continue
+
+def menu_utama(data_account):
+    account = data_account
+
+    print(f"MENU TOKO CUY\nSelamat datang {data_account[0]}")
+
+    if account[1] == 1:
+        print("Kamu admin ya, ini menunya")
+    elif account[1] == 2:
+        print("Kamu pembeli ya, ini menunya")
+    elif account[1] == 0:
+        print("Kamu pemilik toko bjir, ini menunya tuan")

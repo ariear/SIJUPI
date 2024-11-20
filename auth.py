@@ -121,3 +121,11 @@ def verifikasi_password(password_enkripsi, password):
         hasil_dekripsi += chr(ord(i) - 4)
     
     return True if hasil_dekripsi == password else False
+
+def role_parse(role):
+    if role == 0:
+        return 'Pemilik Toko'
+    elif role == 1:
+        return 'Admin'
+    elif role == 2:
+        return 'Pembeli'

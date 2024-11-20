@@ -1,5 +1,6 @@
 import os
-from auth import login, register
+import pandas as pd
+from auth import login, register, role_parse
 
 def menu_awal():
     while True:
@@ -9,7 +10,9 @@ def menu_awal():
         match pilih_menu:
             case '1':
                 os.system('cls')
-                print('gas daftar produk')
+                daftar_produk = pd.read_csv('db/products.csv')
+                daftar_produk.index = daftar_produk.index + 1
+                print(daftar_produk)
                 return 'daftar produk'
             case '2':
                 menu_auth = menu_autentikasi()
@@ -48,13 +51,15 @@ def menu_autentikasi():
                 continue
 
 def menu_utama(data_account):
+    os.system('cls')
+
     account = data_account
 
-    print(f"MENU TOKO CUY\nSelamat datang {data_account[0]}")
+    print(f"{'MENU TOKO SIJUPI':^50}\n\nSelamat datang {account[0]}✨\n\nBerikut adalah daftar menu untuk {role_parse(account[1])}")
 
-    if account[1] == 1:
-        print("Kamu admin ya, ini menunya")
+    if account[1] == 0:
+        print("1. Kelola Pupuk dan Alat Tani\n2. Konfirmasi Pembelian\n3. Kelola Pembelian\n4. Kelola Pengeluaran Toko\n5. Laporan Penjualan dan Pengeluaran\n6. Lihat Notifikasi\n7. Kelola akun\n8. Perbarui Nomor Rekening Toko")
+    elif account[1] == 1:
+        print("1. Kelola Pupuk dan Alat Tani\n2. Konfirmasi Pembelian\n3. Kelola Pembelian\n4. Kelola Pengeluaran Toko\n5. Laporan Penjualan dan Pengeluaran\n6. Lihat Notifikasi")
     elif account[1] == 2:
-        print("Kamu pembeli ya, ini menunya")
-    elif account[1] == 0:
-        print("Kamu pemilik toko bjir, ini menunya tuan")
+        print("1. Beli Pupuk dan Alat Pertanian\n2. Daftar Pembelian\n3. Info Akun\n4. Wishlist Barang\n5. Lihat Notifikasi")

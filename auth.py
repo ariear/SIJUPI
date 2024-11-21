@@ -3,7 +3,7 @@ import pandas as pd
 import random
 
 def accountData():
-    return pd.read_csv('db/account.csv')
+    return pd.read_csv('db/accounts.csv')
 
 def addAccount(username = None, password = None, role = None):
     password = enkripsi_password(password)
@@ -16,7 +16,7 @@ def addAccount(username = None, password = None, role = None):
         'Password': [password],
         'Role': [role]
     })
-    new_account.to_csv('db/account.csv', mode='a', header=False, index=False)
+    new_account.to_csv('db/accounts.csv', mode='a', header=False, index=False)
     
     return [username, role]
 

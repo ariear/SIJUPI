@@ -4,6 +4,7 @@ from auth import login, register, role_parse
 
 def menu_awal():
     while True:
+        print(f"\n{'SELAMAT DATANG DI TOKO PUPUK DAN ALAT TANI (SIJUPI)':^90}\n")
         print("Kamu berada di menu tamu\n1. Daftar Pupuk dan Alat Pertanian\n2. Menu Autentikasi\n3. Keluar")
         pilih_menu = input("Pilih berdasarkan nomor : ")
         
@@ -12,8 +13,12 @@ def menu_awal():
                 os.system('cls')
                 daftar_produk = pd.read_csv('db/products.csv')
                 daftar_produk.index = daftar_produk.index + 1
+                print(f"\n{'Daftar Pupuk dan Alat Pertanian':^40}\n")
                 print(daftar_produk)
-                return 'daftar produk'
+
+                input("\nKetik apapun untuk kembali ke menu : ")
+                os.system('cls')
+                continue
             case '2':
                 menu_auth = menu_autentikasi()
 
@@ -55,7 +60,7 @@ def menu_utama(data_account):
 
     account = data_account
 
-    print(f"{'MENU TOKO SIJUPI':^50}\n\nSelamat datang {account[0]}✨\n\nBerikut adalah daftar menu untuk {role_parse(account[1])}")
+    print(f"\n{'MENU TOKO SIJUPI':^50}\n\nSelamat datang {account[0]}✨\n\nBerikut adalah daftar menu untuk {role_parse(account[1])}")
 
     if account[1] == 0:
         print("1. Kelola Pupuk dan Alat Tani\n2. Konfirmasi Pembelian\n3. Kelola Pembelian\n4. Kelola Pengeluaran Toko\n5. Laporan Penjualan dan Pengeluaran\n6. Lihat Notifikasi\n7. Kelola akun\n8. Perbarui Nomor Rekening Toko")

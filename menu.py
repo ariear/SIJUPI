@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 from auth import login, register, role_parse
+from lib import info_akun
 
 def menu_awal():
     while True:
@@ -116,7 +117,7 @@ def menu_utama(data_account):
             elif pilih_menu == '2':
                 print('daftar beli')
             elif pilih_menu == '3':
-                print('info akun')
+                account[0] = info_akun(account[0])
             elif pilih_menu == '4':
                 print('wislis')
             elif pilih_menu == '5':

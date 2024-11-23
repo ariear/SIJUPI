@@ -17,7 +17,7 @@ def menu_awal():
                 print(f"\n{'Daftar Pupuk dan Alat Pertanian':^40}\n")
                 print(daftar_produk)
 
-                input("\nKetik apapun untuk kembali ke menu : ")
+                input("\nTekan Enter untuk kembali...")
                 os.system('cls')
                 continue
             case '2':

@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 from auth import login, register, role_parse
-from lib import info_akun, daftarBarang
+from lib import info_akun, daftarBarang, tambah_wishlist, lihat_wishlist
 
 def menu_awal():
     while True:
@@ -109,28 +109,30 @@ def menu_utama(data_account):
                 print('Input harus ada di menu dan berupa angka!')
                 continue
         elif account[1] == 2:
-            print("1. Beli Pupuk dan Alat Pertanian\n2. Daftar Pembelian\n3. Info Akun\n4. Wishlist Barang\n5. Lihat Notifikasi")
+            print("1. Beli Pupuk dan Alat Pertanian\n2. Daftar Pembelian\n3. Info Akun\n4. Wishlist Produk\n5. Lihat Notifikasi")
 
             pilih_menu = input("Pilih berdasarkan nomor : ")
             if pilih_menu == '1':
-                lanjutanMenu = daftarBarang()
-                if lanjutanMenu == "1":
-                    print("Beli Barang")
-                elif lanjutanMenu == "2":
-                    print("Tambah Wishlist Barang")
-                elif lanjutanMenu == "3":
-                    os.system('cls')
-                    continue
-                else:
-                    os.system('cls')
-                    print('Input harus ada di menu dan berupa angka!')
-                    continue
+                os.system('cls')
+                while True:
+                    lanjutanMenu = daftarBarang()
+                    if lanjutanMenu == "1":
+                        print("Beli Barang")
+                    elif lanjutanMenu == "2":
+                        tambah_wishlist(account[0])
+                    elif lanjutanMenu == "3":
+                        os.system('cls')
+                        break
+                    else:
+                        os.system('cls')
+                        print('Input harus ada di menu dan berupa angka!')
+                        continue
             elif pilih_menu == '2':
                 print('daftar beli')
             elif pilih_menu == '3':
                 account[0] = info_akun(account[0])
             elif pilih_menu == '4':
-                print('wislis')
+                lihat_wishlist(account[0])
             elif pilih_menu == '5':
                 print('notif')
             else:

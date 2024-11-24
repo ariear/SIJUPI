@@ -76,10 +76,68 @@ def info_akun(username):
                 continue
 
 def daftarBarang():
-    os.system('cls')
     daftar_produk = pd.read_csv('db/products.csv')
     daftar_produk.index = daftar_produk.index + 1
     print(f"\n{'Daftar Pupuk dan Alat Pertanian':^40}\n")
     print(daftar_produk)
 
-    return input("\nDaftar Menu:\n1. Beli Barang\n2. Tambah Wishlist Barang\n3. Kembali\nPilih berdasarkan nomor menu : ")
+    return input("\nDaftar Menu:\n1. Beli Produk\n2. Tambah Wishlist Produk\n3. Kembali\nPilih berdasarkan nomor menu : ")
+
+
+def tambah_wishlist(username):
+    os.system('cls')
+    daftar_produk = pd.read_csv('db/products.csv')
+    daftar_produk.index = daftar_produk.index + 1
+
+    wishlist = pd.read_csv('db/wishlists.csv')
+
+    while True:
+        print(f"\n{'TAMBAH WISHLIST PRODUK':^40}\n")
+        print(daftar_produk)
+        
+        try:
+            pilihan = int(input("\nPilih produk berdasarkan nomor (0 untuk keluar): "))
+            if pilihan == 0:
+                os.system('cls')
+                break
+            elif 1 <= pilihan <= len(daftar_produk):
+                barang = daftar_produk.iloc[pilihan - 1]
+                nama_produk = barang['Nama Produk']
+                harga = barang['Harga']
+
+                if not wishlist[(wishlist['Username'] == username) & (wishlist['Nama Produk'] == nama_produk)].empty:
+                    os.system('cls')
+                    print(f"\n{nama_produk} sudah ada di wishlist Anda!")
+                else:
+                    new_entry = pd.DataFrame({'Username': [username], 'Nama Produk': [nama_produk], 'Harga': [harga]})
+                    wishlist = pd.concat([wishlist, new_entry], ignore_index=True)
+                    wishlist.to_csv('db/wishlists.csv', index=False)
+                    
+                    os.system('cls')
+                    print(f"\n{nama_produk} berhasil ditambahkan ke wishlist!")
+            else:
+                os.system('cls')
+                print("\nPilihan tidak ada, coba lagi.")
+        except ValueError:
+            os.system('cls')
+            print("\nInput harus berupa angka, coba lagi.")
+
+
+def lihat_wishlist(username):
+    os.system('cls')
+
+    wishlists = pd.read_csv('db/wishlists.csv')
+    user_wishlists = wishlists[wishlists['Username'] == username]
+
+    os.system('cls')
+    print(f"\n{'WISHLIST ANDA':^40}\n")
+    if user_wishlists.empty:
+        print("Kamu belum memiliki produk di wishlist.")
+    else:
+        user_wishlists = user_wishlists.reset_index(drop=True)
+        user_wishlists.index += 1
+
+        print(user_wishlists[['Nama Produk', 'Harga']])
+    
+    input("\nTekan Enter untuk kembali...")
+    os.system('cls')

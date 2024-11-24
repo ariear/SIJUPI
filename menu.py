@@ -2,6 +2,7 @@ import os
 import pandas as pd
 from auth import login, register, role_parse
 from lib import info_akun
+from userMenu import daftarBarang
 
 def menu_awal():
     while True:
@@ -113,7 +114,18 @@ def menu_utama(data_account):
 
             pilih_menu = input("Pilih berdasarkan nomor : ")
             if pilih_menu == '1':
-                print('beli pupuk ')
+                lanjutanMenu = daftarBarang()
+                if lanjutanMenu == "1":
+                    print("Beli Barang")
+                elif lanjutanMenu == "2":
+                    print("Tambah Wishlist Barang")
+                elif lanjutanMenu == "3":
+                    os.system('cls')
+                    continue
+                else:
+                    os.system('cls')
+                    print('Input harus ada di menu dan berupa angka!')
+                    continue
             elif pilih_menu == '2':
                 print('daftar beli')
             elif pilih_menu == '3':

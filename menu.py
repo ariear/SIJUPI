@@ -1,8 +1,7 @@
 import os
 import pandas as pd
 from auth import login, register, role_parse
-from lib import info_akun
-from userMenu import daftarBarang
+from lib import info_akun, daftarBarang
 
 def menu_awal():
     while True:

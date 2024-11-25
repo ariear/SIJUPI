@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 from auth import login, register, role_parse
-from lib import info_akun, daftarBarang, tambah_wishlist, lihat_wishlist
+from lib import info_akun, daftarBarang, tambah_wishlist, lihat_wishlist, beli_barang
 
 def menu_awal():
     while True:
@@ -117,7 +117,8 @@ def menu_utama(data_account):
                 while True:
                     lanjutanMenu = daftarBarang()
                     if lanjutanMenu == "1":
-                        print("Beli Barang")
+                        barang_mau_dibeli = beli_barang()
+                        print(barang_mau_dibeli)
                     elif lanjutanMenu == "2":
                         tambah_wishlist(account[0])
                     elif lanjutanMenu == "3":

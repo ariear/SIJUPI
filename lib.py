@@ -141,3 +141,67 @@ def lihat_wishlist(username):
     
     input("\nTekan Enter untuk kembali...")
     os.system('cls')
+
+def beli_barang():
+    while True:
+        # os.system('cls')
+        barang = input("\nSilahkan Masukkan Nama Barang Yang Ingin Dibeli\n(jika barang lebih dari 1 maka bisa dipisah dengan ','): ")
+        barang = barang.split(",")
+        
+        error = False
+        barang_fix = []
+        df = pd.read_csv('db/products.csv')
+        for item in barang:
+            data = df[df['Nama Produk'] == item.title().strip()]
+            
+            if not data.empty:
+                stock = data['Stock'].values[0]
+                if int(stock) > 0:
+                    barang_fix.append(item.title().strip())
+                else:
+                    print(f"\nMaaf Stock dari {item} sudah habis...")
+                    error = True
+                    break
+            else:
+                print(f"\nKami tidak menjual {item}!")
+                error = True
+                break
+        if error == False:
+            break
+    
+    quantitas = []
+    for item in barang:
+        data = df[df['Nama Produk'] == item.title().strip()]
+        stock = data['Stock'].values[0]
+        
+        while True :
+            try :
+                qty = int(input(f"\nBerapa banyak {item} yang akan dibeli?: "))
+                if qty > 0:
+                    if stock >= qty:
+                        quantitas.append(qty)
+                    else:
+                        print(f"\nMaaf, Stock dari {item} tidak mencukupi...")
+                        continue
+                else:
+                    print(f"\nInput harus lebih dari 0")
+                    continue
+                break
+            except ValueError:
+                print("\nInput Harus Berupa Angka!")
+                continue
+            
+    while True:
+        print("\nMetode Pembayaran:\n1. Cash\n2. Transfer")
+        bayar = input("Silahkan Pilih Metode Pembayaran Sesuai Nomornya: ")
+        if int(bayar) and int(bayar) == 1:
+            bayar = "Cash"
+            break
+        elif int(bayar) and int(bayar) == 2:
+            bayar = "Transfer"
+            break
+        else:
+            print("\nHarap Masukkan Input Yang Valid!")
+            continue
+        
+    return [barang, quantitas, bayar]

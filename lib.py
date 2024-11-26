@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+import csv
 from auth import enkripsi_password, verifikasi_password
 from auth import role_parse
 
@@ -145,7 +146,7 @@ def lihat_wishlist(username):
 def beli_barang():
     while True:
         # os.system('cls')
-        barang = input("\nSilahkan Masukkan Nama Barang Yang Ingin Dibeli\n(jika barang lebih dari 1 maka bisa dipisah dengan ','): ")
+        barang = input("\nSilahkan Masukkan Nama Produk Yang Ingin Dibeli\n(jika barang lebih dari 1 maka bisa dipisah dengan ','): ")
         barang = barang.split(",")
         
         error = False
@@ -205,3 +206,96 @@ def beli_barang():
             continue
         
     return [barang, quantitas, bayar]
+
+
+
+#CRUD BARANG
+def read() :
+    data = pd.read_csv('db/products.csv')
+    data.index = data.index + 1
+    print(data)
+
+def add():
+    if not os.path.exists('db/products.csv'):
+        with open('db/products.csv', mode='w', newline='') as file :
+            csv_writer = csv.writer(file)
+            header = ('Nama Produk', 'Jenis', 'Harga', 'Stock')
+            csv_writer.writerow(header)
+
+    Nama = input("Nama Produk\t: ")
+    Jenis = input("Jenis\t: ")
+    Harga = input("Harga\t: ")
+    Stock = int(input("Stock\t: "))
+    with open('db/products.csv', mode='a', newline='') as file:
+        csv_writer = csv.writer(file)
+
+        # print(id)
+        csv_writer.writerow((Nama, Jenis, Harga, Stock))
+    
+    data = pd.read_csv('db/products.csv')
+    data.index = data.index + 1
+    print("Data berhasil ditambahkan.")
+    print(data)
+
+def update():
+    data = pd.read_csv('db/products.csv')
+    data.index = data.index + 1
+    print(data)
+        
+    id_update = int(input("Masukkan ID yang ingin diupdate : ")) - 1
+    
+    Nama = input("Nama Produk\t: ")
+    Jenis = input("Jenis\t: ")                
+    Harga = int(input("Harga\t: "))
+    Stock = int(input("Stock\t: "))
+    
+    data.iloc[id_update] = [Nama, Jenis, Harga, Stock]
+    data.to_csv('db/products.csv', index=False)
+    print("Data telah diupdate!")
+    print(data)
+    
+def delete():
+    data = pd.read_csv('db/products.csv')
+    data.index = data.index + 1
+    print(data)
+
+    answer = ["iya", "tidak"]
+    quest = input("Apakah anda yakin ingin menghapus data? (iya/tidak) : ")
+    if quest in answer : 
+        if quest == "iya" :
+            id_del = int(input("Masukkan Id yang ingin dihapus: "))
+            if id_del in data.index :
+                if id_del in data.index :
+                    data = data.drop(id_del)
+                    data.to_csv('db/products.csv', index=False)
+                    print("Data berhasil dihapus!")
+                    print(data)
+            else :
+                print("Masukkan index dengan benar!")
+        else :
+            print("Silahkan pilih menu lainnya")
+    else :
+        print("Masukkan jawaban dengan benar!")
+
+def kelola() :
+    while True:
+        print("Menu:")
+        print("1. Tambah Data")
+        print("2. Baca Data")
+        print("3. Update Data")
+        print("4. Hapus Data")
+        print("5. Keluar")
+        choice = input("Pilih opsi: ")
+
+        if choice == '1':
+            add()
+        elif choice == '2':
+            read()
+        elif choice == '3':
+            update()
+        elif choice == '4':
+            delete()
+        elif choice == '5':
+            break
+        else:
+            print("Pilihan tidak valid.")

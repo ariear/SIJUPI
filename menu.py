@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 from auth import login, register, role_parse
-from lib import info_akun, daftarBarang, tambah_wishlist, lihat_wishlist, beli_barang
+from lib import info_akun, daftarBarang, tambah_wishlist, lihat_wishlist, beli_barang, kelola
 
 def menu_awal():
     while True:
@@ -69,7 +69,7 @@ def menu_utama(data_account):
         
             pilih_menu = input("Pilih berdasarkan nomor : ")
             if pilih_menu == '1':
-                print('kelola pupuk ')
+                kelola()
             elif pilih_menu == '2':
                 print('konfir pembeli')
             elif pilih_menu == '3':
@@ -88,12 +88,13 @@ def menu_utama(data_account):
                 os.system('cls')
                 print('Input harus ada di menu dan berupa angka!')
                 continue
+            
         elif account[1] == 1:
             print("1. Kelola Pupuk dan Alat Tani\n2. Konfirmasi Pembelian\n3. Kelola Pembelian\n4. Kelola Pengeluaran Toko\n5. Laporan Penjualan dan Pengeluaran\n6. Lihat Notifikasi")
 
             pilih_menu = input("Pilih berdasarkan nomor : ")
             if pilih_menu == '1':
-                print('kelola pupuk ')
+                kelola()
             elif pilih_menu == '2':
                 print('konfir pembeli')
             elif pilih_menu == '3':

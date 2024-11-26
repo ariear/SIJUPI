@@ -209,7 +209,6 @@ def beli_barang():
 
 
 
-#CRUD BARANG
 def read() :
     data = pd.read_csv('db/products.csv')
     data.index = data.index + 1
@@ -229,7 +228,6 @@ def add():
     with open('db/products.csv', mode='a', newline='') as file:
         csv_writer = csv.writer(file)
 
-        # print(id)
         csv_writer.writerow((Nama, Jenis, Harga, Stock))
     
     data = pd.read_csv('db/products.csv')
@@ -259,11 +257,11 @@ def delete():
     data.index = data.index + 1
     print(data)
 
+    id_del = int(input("Masukkan Id yang ingin dihapus: "))
     answer = ["iya", "tidak"]
-    quest = input("Apakah anda yakin ingin menghapus data? (iya/tidak) : ")
+    quest = input("Yakin ingin menghapus produk tersebut? (iya/tidak) : ")
     if quest in answer : 
         if quest == "iya" :
-            id_del = int(input("Masukkan Id yang ingin dihapus: "))
             if id_del in data.index :
                 if id_del in data.index :
                     data = data.drop(id_del)
@@ -277,7 +275,9 @@ def delete():
     else :
         print("Masukkan jawaban dengan benar!")
 
+
 def kelola() :
+    os.system('cls')
     while True:
         print("Menu:")
         print("1. Tambah Data")
@@ -286,6 +286,7 @@ def kelola() :
         print("4. Hapus Data")
         print("5. Keluar")
         choice = input("Pilih opsi: ")
+        os.system('cls')
 
         if choice == '1':
             add()

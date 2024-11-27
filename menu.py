@@ -5,8 +5,21 @@ from lib import info_akun, daftarBarang, tambah_wishlist, lihat_wishlist, beli_b
 
 def menu_awal():
     while True:
-        print(f"\n{'SELAMAT DATANG DI TOKO PUPUK DAN ALAT TANI (SIJUPI)':^90}\n")
-        print("Kamu berada di menu tamu\n1. Daftar Pupuk dan Alat Pertanian\n2. Menu Autentikasi\n3. Keluar")
+        print("-"*80)
+        print(f"|{' '*78}|")
+        print(f"|{'SELAMAT DATANG DI TOKO PUPUK DAN ALAT TANI (SIJUPI)':^78}|")
+        print(f"|{' '*78}|")
+        print("-"*80)
+
+        print(f"|{' ' * 78}|")
+        print(f"|{'Kamu berada di menu tamu':^78}|")
+        print(f"|{' ' * 78}|")
+        print(f"|{'     1. Daftar Pupuk dan Alat Pertanian':<78}|")
+        print(f"|{'     2. Menu Autentikasi':<78}|")
+        print(f"|{'     3. Keluar':<78}|")
+        print(f"|{' ' * 78}|")
+        print("-" * 80)
+
         pilih_menu = input("Pilih berdasarkan nomor : ")
         
         match pilih_menu:
@@ -14,8 +27,18 @@ def menu_awal():
                 os.system('cls')
                 daftar_produk = pd.read_csv('db/products.csv')
                 daftar_produk.index = daftar_produk.index + 1
-                print(f"\n{'Daftar Pupuk dan Alat Pertanian':^40}\n")
-                print(daftar_produk)
+
+                header = "| {:^5} | {:^28} | {:^10} | {:^15} | {:^5} |".format("No", "Nama Produk", "Jenis", "Harga", "Stok")
+                garis = "-"* 79
+
+                print(f"\n{'Daftar Pupuk dan Alat Pertanian':^80}\n")
+                print(garis)
+                print(header)
+                print(garis)
+
+                for id, row in daftar_produk.iterrows():
+                    print("| {:^5} | {:<28} | {:>10} | {:>15} | {:>5} |".format(id, row['Nama Produk'], row['Jenis'], row['Harga'], row['Stock']))
+                    print(garis)
 
                 input("\nTekan Enter untuk kembali...")
                 os.system('cls')
@@ -39,8 +62,19 @@ def menu_awal():
 def menu_autentikasi():
     os.system('cls')
     while True:
-        print("Kamu berada di menu autentikasi")
-        print("1. Masuk ke akun\n2. Buat akun\n3. Keluar\n")
+        print("-"*80)
+        print(f"|{' ' * 78}|")
+        print(f"|{'Kamu berada di menu autentikasi':^78}|")
+        print(f"|{' ' * 78}|")
+        print("-"*80)
+
+        print(f"|{' ' * 78}|")
+        print(f"|{'     1. Masuk ke akun':<78}|")
+        print(f"|{'     2. Buat akun':<78}|")
+        print(f"|{'     3. Kembali':<78}|")
+        print(f"|{' ' * 78}|")
+        print("-" * 80)
+
         pilih_auth = input("Pilih berdasarkan nomor : ")
         
         match pilih_auth:

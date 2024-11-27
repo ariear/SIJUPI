@@ -50,7 +50,8 @@ def menu_awal():
                     menu_utama(menu_auth)
                     return 'gas menu toko'
                 elif menu_auth == 'keluar':
-                    return 'keluar'
+                    os.system('cls')
+                    continue
             case '3':
                 print('\nTerimakasih sudah berkunjung di toko kami 🙏')
                 return 'keluar'

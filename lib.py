@@ -131,14 +131,26 @@ def lihat_wishlist(username):
     user_wishlists = wishlists[wishlists['Username'] == username]
 
     os.system('cls')
-    print(f"\n{'WISHLIST ANDA':^40}\n")
+    print("-"*80)
+    print(f"|{' ' * 78}|")
+    print(f"|{'WISHLIST ANDA':^78}|")
+    print(f"|{' ' * 78}|")
+    print("-"*80)
+
     if user_wishlists.empty:
         print("Kamu belum memiliki produk di wishlist.")
     else:
         user_wishlists = user_wishlists.reset_index(drop=True)
         user_wishlists.index += 1
 
-        print(user_wishlists[['Nama Produk', 'Harga']])
+        header = "| {:^5} | {:^28} | {:^37} |".format("No", "Nama Produk", "Harga")
+        garis = "-"* 79
+        print(garis)
+        print(header)
+        print(garis)
+        for id, row in user_wishlists.iterrows():
+            print("| {:^5} | {:<28} | {:>37} |".format(id, row['Nama Produk'], row['Harga']))
+            print(garis)
     
     input("\nTekan Enter untuk kembali...")
     os.system('cls')

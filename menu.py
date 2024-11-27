@@ -53,7 +53,7 @@ def menu_awal():
                     os.system('cls')
                     continue
             case '3':
-                print('\nTerimakasih sudah berkunjung di toko kami 🙏')
+                print(f"\n{'Terimakasih sudah berkunjung di toko kami 🙏':^78}")
                 return 'keluar'
             case _:
                 os.system('cls')
@@ -84,8 +84,8 @@ def menu_autentikasi():
             case '2':
                 return register()
             case '3':
-                print('\nTerimakasih sudah berkunjung di toko kami 🙏')
-                return 'keluar'
+                os.system('cls')
+                return 'kembali'
             case _:
                 os.system('cls')
                 print(f"\n{'⚠  Input harus ada di menu dan berupa angka! ⚠':^78}\n")
@@ -116,6 +116,7 @@ def menu_utama(data_account):
             print(f"|{'     6. Lihat Notifikasi':<78}|")
             print(f"|{'     7. Kelola akun':<78}|")
             print(f"|{'     8. Perbarui Nomor Rekening Toko':<78}|")
+            print(f"|{'     9. Logout':<78}|")
             print(f"|{' ' * 78}|")
             print("-" * 80)
         
@@ -136,6 +137,9 @@ def menu_utama(data_account):
                 print('kelola akun')
             elif pilih_menu == '8':
                 print('update no rek')
+            elif pilih_menu == '9':
+                print(f"\n{'Terimakasih sudah berkunjung di toko kami 🙏':^78}")
+                return True
             else:
                 os.system('cls')
                 print(f"\n{'⚠  Input harus ada di menu dan berupa angka! ⚠':^78}\n")
@@ -148,6 +152,7 @@ def menu_utama(data_account):
             print(f"|{'     4. Kelola Pengeluaran Toko':<78}|")
             print(f"|{'     5. Laporan Penjualan dan Pengeluaran':<78}|")
             print(f"|{'     6. Lihat Notifikasi':<78}|")
+            print(f"|{'     7. Logout':<78}|")
             print(f"|{' ' * 78}|")
             print("-" * 80)
 
@@ -164,6 +169,9 @@ def menu_utama(data_account):
                 print('laporan penjualan dan pengeluaran')
             elif pilih_menu == '6':
                 print('lihat notif')
+            elif pilih_menu == '7':
+                print(f"\n{'Terimakasih sudah berkunjung di toko kami 🙏':^78}")
+                return True
             else:
                 os.system('cls')
                 print(f"\n{'⚠  Input harus ada di menu dan berupa angka! ⚠':^78}\n")
@@ -175,6 +183,7 @@ def menu_utama(data_account):
             print(f"|{'     3. Info Akun':<78}|")
             print(f"|{'     4. Wishlist Produk':<78}|")
             print(f"|{'     5. Lihat Notifikasi':<78}|")
+            print(f"|{'     6. Logout':<78}|")
             print(f"|{' ' * 78}|")
             print("-" * 80)
 
@@ -203,6 +212,9 @@ def menu_utama(data_account):
                 lihat_wishlist(account[0])
             elif pilih_menu == '5':
                 print('notif')
+            elif pilih_menu == '6':
+                print(f"\n{'Terimakasih sudah berkunjung di toko kami 🙏':^78}")
+                return True
             else:
                 os.system('cls')
                 print(f"\n{'⚠  Input harus ada di menu dan berupa angka! ⚠':^78}\n")

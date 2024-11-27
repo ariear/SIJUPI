@@ -97,10 +97,27 @@ def menu_utama(data_account):
     account = data_account
 
     while True:
-        print(f"\n{'MENU TOKO SIJUPI':^50}\n\nSelamat datang {account[0]}✨\n\nBerikut adalah daftar menu untuk {role_parse(account[1])}")
+        print("-"*80)
+        print(f"|{' ' * 78}|")
+        print(f"|{'MENU TOKO SIJUPI':^78}|")
+        print(f"|{' ' * 78}|")
+        print(f"|{'Selamat datang ' + account[0] + '✨':^77}|")
+        print(f"|{' ' * 78}|")
+        print("-"*80)
+        print(f"|     {'Berikut adalah daftar menu untuk ' + role_parse(account[1]) + '':<73}|")
+        print(f"|{' ' * 78}|")
 
         if account[1] == 0:
-            print("1. Kelola Pupuk dan Alat Tani\n2. Konfirmasi Pembelian\n3. Kelola Pembelian\n4. Kelola Pengeluaran Toko\n5. Laporan Penjualan dan Pengeluaran\n6. Lihat Notifikasi\n7. Kelola akun\n8. Perbarui Nomor Rekening Toko")
+            print(f"|{'     1. Kelola Pupuk dan Alat Tani':<78}|")
+            print(f"|{'     2. Konfirmasi Pembelian':<78}|")
+            print(f"|{'     3. Kelola Pembelian':<78}|")
+            print(f"|{'     4. Kelola Pengeluaran Toko':<78}|")
+            print(f"|{'     5. Laporan Penjualan dan Pengeluaran':<78}|")
+            print(f"|{'     6. Lihat Notifikasi':<78}|")
+            print(f"|{'     7. Kelola akun':<78}|")
+            print(f"|{'     8. Perbarui Nomor Rekening Toko':<78}|")
+            print(f"|{' ' * 78}|")
+            print("-" * 80)
         
             pilih_menu = input("Pilih berdasarkan nomor : ")
             if pilih_menu == '1':
@@ -121,11 +138,18 @@ def menu_utama(data_account):
                 print('update no rek')
             else:
                 os.system('cls')
-                print('Input harus ada di menu dan berupa angka!')
+                print(f"\n{'⚠  Input harus ada di menu dan berupa angka! ⚠':^78}\n")
                 continue
             
         elif account[1] == 1:
-            print("1. Kelola Pupuk dan Alat Tani\n2. Konfirmasi Pembelian\n3. Kelola Pembelian\n4. Kelola Pengeluaran Toko\n5. Laporan Penjualan dan Pengeluaran\n6. Lihat Notifikasi")
+            print(f"|{'     1. Kelola Pupuk dan Alat Tani':<78}|")
+            print(f"|{'     2. Konfirmasi Pembelian':<78}|")
+            print(f"|{'     3. Kelola Pembelian':<78}|")
+            print(f"|{'     4. Kelola Pengeluaran Toko':<78}|")
+            print(f"|{'     5. Laporan Penjualan dan Pengeluaran':<78}|")
+            print(f"|{'     6. Lihat Notifikasi':<78}|")
+            print(f"|{' ' * 78}|")
+            print("-" * 80)
 
             pilih_menu = input("Pilih berdasarkan nomor : ")
             if pilih_menu == '1':
@@ -142,10 +166,17 @@ def menu_utama(data_account):
                 print('lihat notif')
             else:
                 os.system('cls')
-                print('Input harus ada di menu dan berupa angka!')
+                print(f"\n{'⚠  Input harus ada di menu dan berupa angka! ⚠':^78}\n")
                 continue
+
         elif account[1] == 2:
-            print("1. Beli Pupuk dan Alat Pertanian\n2. Daftar Pembelian\n3. Info Akun\n4. Wishlist Produk\n5. Lihat Notifikasi")
+            print(f"|{'     1. Beli Pupuk dan Alat Pertanian':<78}|")
+            print(f"|{'     2. Daftar Pembelian':<78}|")
+            print(f"|{'     3. Info Akun':<78}|")
+            print(f"|{'     4. Wishlist Produk':<78}|")
+            print(f"|{'     5. Lihat Notifikasi':<78}|")
+            print(f"|{' ' * 78}|")
+            print("-" * 80)
 
             pilih_menu = input("Pilih berdasarkan nomor : ")
             if pilih_menu == '1':
@@ -162,7 +193,7 @@ def menu_utama(data_account):
                         break
                     else:
                         os.system('cls')
-                        print('Input harus ada di menu dan berupa angka!')
+                        print(f"\n{'⚠  Input harus ada di menu dan berupa angka! ⚠':^78}\n")
                         continue
             elif pilih_menu == '2':
                 print('daftar beli')
@@ -174,5 +205,5 @@ def menu_utama(data_account):
                 print('notif')
             else:
                 os.system('cls')
-                print('Input harus ada di menu dan berupa angka!')
+                print(f"\n{'⚠  Input harus ada di menu dan berupa angka! ⚠':^78}\n")
                 continue

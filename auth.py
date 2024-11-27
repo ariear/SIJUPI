@@ -24,13 +24,17 @@ def login(errorMsg = False):
     os.system('cls')
     
     if errorMsg:
-        print(errorMsg, "\n")
+        print(f"\n{' ' * 10} {errorMsg} ❌\n")
         
-    print(f"{'LOGIN':^30}")
+    print("-"*80)
+    print(f"|{' ' * 78}|")
+    print(f"|{'LOGIN':^78}|")
+    print(f"|{' ' * 78}|")
+    print("-"*80)
     
     while True:
-        username = input("Masukkan Username anda: ")
-        password = input("Masukkan Password anda: ")
+        username = input("\n🙍 Masukkan Username anda: ")
+        password = input("🔑 Masukkan Password anda: ")
         
         accounts = accountData()
         
@@ -50,14 +54,18 @@ def register(errorMsg = False, superAdmin = False):
     os.system('cls')
     
     if errorMsg:
-        print(errorMsg, "\n")
+        print(f"\n{' ' * 10} {errorMsg} ❌\n")
         
-    print(f"{'REGISTRASI AKUN':^30}")
+    print("-"*80)
+    print(f"|{' ' * 78}|")
+    print(f"|{'REGISTER':^78}|")
+    print(f"|{' ' * 78}|")
+    print("-"*80)
     
     while True:
-        username = input("Masukkan Username anda (minimal 3 character!): ").strip()
-        password = input("Masukkan Password anda (minimal 8 character!): ").strip()
-        confirmedPassword = input("Konfirmasi Ulang Password anda: ").strip()
+        username = input("\n🙍 Masukkan Username anda (minimal 3 character!): ").strip()
+        password = input("🔑 Masukkan Password anda (minimal 8 character!): ").strip()
+        confirmedPassword = input("🔐 Konfirmasi Ulang Password anda: ").strip()
         role = None
 
         if not username:
@@ -82,9 +90,9 @@ def register(errorMsg = False, superAdmin = False):
         
         if superAdmin:
             while True:
-                print("\nROLE:"
-                    +"\n1.Admin"
-                    +"\n2.Konsumen"
+                print("\n🎟  ROLE:"
+                    +"\n1.  Admin"
+                    +"\n2.  Pembeli"
                     +"\n")
                 role = input("Akun tersebut memiliki role apa? (1/2): ")
 

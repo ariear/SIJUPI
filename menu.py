@@ -57,7 +57,7 @@ def menu_awal():
                 return 'keluar'
             case _:
                 os.system('cls')
-                print('\nInput harus ada di menu dan berupa angka!\n')
+                print(f"\n{'⚠  Input harus ada di menu dan berupa angka! ⚠':^78}\n")
                 continue
 
 def menu_autentikasi():
@@ -88,7 +88,7 @@ def menu_autentikasi():
                 return 'keluar'
             case _:
                 os.system('cls')
-                print('\nInput harus ada di menu dan berupa angka!\n')
+                print(f"\n{'⚠  Input harus ada di menu dan berupa angka! ⚠':^78}\n")
                 continue
 
 def menu_utama(data_account):

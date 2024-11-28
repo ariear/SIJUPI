@@ -1,8 +1,10 @@
 import os
 import pandas as pd
 import csv
-from auth import enkripsi_password, verifikasi_password
+import random
+from auth import enkripsi_password, verifikasi_password, daftar_huruf
 from auth import role_parse
+from datetime import datetime
 
 def info_akun(username):
     os.system('cls')
@@ -79,10 +81,24 @@ def info_akun(username):
 def daftarBarang():
     daftar_produk = pd.read_csv('db/products.csv')
     daftar_produk.index = daftar_produk.index + 1
-    print(f"\n{'Daftar Pupuk dan Alat Pertanian':^40}\n")
-    print(daftar_produk)
 
-    return input("\nDaftar Menu:\n1. Beli Produk\n2. Tambah Wishlist Produk\n3. Kembali\nPilih berdasarkan nomor menu : ")
+    header = "| {:^5} | {:^29} | {:^10} | {:^15} | {:^5} |".format("No", "Nama Produk", "Jenis", "Harga", "Stok")
+    garis = "-"* 79
+
+
+    print("-"*80)
+    print(f"|{' ' * 78}|")
+    print(f"|{'Daftar Pupuk dan Alat Pertanian':^78}|")
+    print(f"|{' ' * 78}|")
+    print("-"*80)
+
+    print(garis)
+    print(header)
+    print(garis)
+
+    for id, row in daftar_produk.iterrows():
+        print("| {:^5} | {:<29} | {:>10} | {:>15} | {:>5} |".format(id, row['Nama Produk'], row['Jenis'], row['Harga'], row['Stock']))
+        print(garis)
 
 
 def tambah_wishlist(username):
@@ -93,8 +109,12 @@ def tambah_wishlist(username):
     wishlist = pd.read_csv('db/wishlists.csv')
 
     while True:
-        print(f"\n{'TAMBAH WISHLIST PRODUK':^40}\n")
-        print(daftar_produk)
+        print("-"*80)
+        print(f"|{' ' * 78}|")
+        print(f"|{'TAMBAH WISHLIST PRODUK':^78}|")
+        print(f"|{' ' * 78}|")
+        print("-"*80)
+        daftarBarang()
         
         try:
             pilihan = int(input("\nPilih produk berdasarkan nomor (0 untuk keluar): "))
@@ -108,20 +128,20 @@ def tambah_wishlist(username):
 
                 if not wishlist[(wishlist['Username'] == username) & (wishlist['Nama Produk'] == nama_produk)].empty:
                     os.system('cls')
-                    print(f"\n{nama_produk} sudah ada di wishlist Anda!")
+                    print(f"\n{nama_produk + ' sudah ada di wishlist Anda!':^78}")
                 else:
                     new_entry = pd.DataFrame({'Username': [username], 'Nama Produk': [nama_produk], 'Harga': [harga]})
                     wishlist = pd.concat([wishlist, new_entry], ignore_index=True)
                     wishlist.to_csv('db/wishlists.csv', index=False)
                     
                     os.system('cls')
-                    print(f"\n{nama_produk} berhasil ditambahkan ke wishlist!")
+                    print(f"\n{nama_produk + 'berhasil ditambahkan ke wishlist!':^78}")
             else:
                 os.system('cls')
-                print("\nPilihan tidak ada, coba lagi.")
+                print(f"\n{'Pilihan tidak ada, coba lagi.':^78}")
         except ValueError:
             os.system('cls')
-            print("\nInput harus berupa angka, coba lagi.")
+            print(f"\n{'Input harus berupa angka, coba lagi.':^78}")
 
 
 def lihat_wishlist(username):
@@ -155,70 +175,130 @@ def lihat_wishlist(username):
     input("\nTekan Enter untuk kembali...")
     os.system('cls')
 
-def beli_barang():
+def beli_barang(username):
+    os.system('cls')
     while True:
-        # os.system('cls')
-        barang = input("\nSilahkan Masukkan Nama Produk Yang Ingin Dibeli\n(jika barang lebih dari 1 maka bisa dipisah dengan ','): ")
-        barang = barang.split(",")
-        
-        error = False
-        barang_fix = []
         df = pd.read_csv('db/products.csv')
-        for item in barang:
-            data = df[df['Nama Produk'] == item.title().strip()]
-            
-            if not data.empty:
-                stock = data['Stock'].values[0]
-                if int(stock) > 0:
-                    barang_fix.append(item.title().strip())
-                else:
-                    print(f"\nMaaf Stock dari {item} sudah habis...")
-                    error = True
-                    break
-            else:
-                print(f"\nKami tidak menjual {item}!")
-                error = True
-                break
-        if error == False:
-            break
-    
-    quantitas = []
-    for item in barang:
-        data = df[df['Nama Produk'] == item.title().strip()]
-        stock = data['Stock'].values[0]
+        daftarBarang()
         
-        while True :
-            try :
-                qty = int(input(f"\nBerapa banyak {item} yang akan dibeli?: "))
-                if qty > 0:
-                    if stock >= qty:
-                        quantitas.append(qty)
-                    else:
-                        print(f"\nMaaf, Stock dari {item} tidak mencukupi...")
-                        continue
-                else:
-                    print(f"\nInput harus lebih dari 0")
-                    continue
-                break
-            except ValueError:
-                print("\nInput Harus Berupa Angka!")
-                continue
-            
-    while True:
-        print("\nMetode Pembayaran:\n1. Cash\n2. Transfer")
-        bayar = input("Silahkan Pilih Metode Pembayaran Sesuai Nomornya: ")
-        if int(bayar) and int(bayar) == 1:
-            bayar = "Cash"
-            break
-        elif int(bayar) and int(bayar) == 2:
-            bayar = "Transfer"
-            break
-        else:
-            print("\nHarap Masukkan Input Yang Valid!")
-            continue
+        barang_fix = []
+        quantitas = []
+        daftar_harga = []
         
-    return [barang, quantitas, bayar]
+        while True:
+            try:
+                pilihan = int(input("\nMasukkan nomor produk yang ingin dibeli: "))
+                if 1 <= pilihan <= len(df):
+                    item = df.iloc[pilihan-1]
+                    nama_produk = item['Nama Produk']
+                    harga = item['Harga'] 
+                    stock = item['Stock']
+                    
+                    while True:
+                        try:
+                            qty = int(input(f"Berapa banyak {nama_produk} yang ingin dibeli?: "))
+                            if qty > 0:
+                                if qty <= stock:
+                                    barang_fix.append(nama_produk)
+                                    quantitas.append(qty)
+                                    daftar_harga.append(harga)
 
+                                    df.loc[pilihan-1, 'Stock'] = stock - qty
+
+                                    print(f"\n{str(qty) + ' ' + nama_produk + ' berhasil ditambahkan ke daftar pembelian.':^78}")
+                                    break
+                                else:
+                                    print(f"\nMaaf, stok {nama_produk} hanya tersedia {stock}.")
+                            else:
+                                print("\nJumlah harus lebih dari 0.")
+                        except ValueError:
+                            print("\nInput harus berupa angka!")
+                else:
+                    print("\nNomor produk tidak ada!!")
+            except ValueError:
+                print("\nInput harus berupa angka!")
+            
+            while True:
+                print("\nIngin membeli barang lagi?\n1. Ya\n2. Tidak")
+                lagi = input("Pilih (1/2): ")
+                if lagi == "1":
+                    break
+                elif lagi == "2":
+                    break
+                else:
+                    print("\nInput tidak valid, coba lagi.")
+            if lagi == "1":
+                os.system('cls')
+                daftarBarang()
+                continue
+            elif lagi == "2":
+                os.system('cls')
+                daftarBarang()
+                break
+        
+        while True:
+            print("\nMetode Pembayaran:\n1. Cash\n2. Transfer")
+            bayar = input("Silahkan Pilih Metode Pembayaran Sesuai Nomornya: ")
+            if bayar == "1":
+                bayar = "Cash"
+                break
+            elif bayar == "2":
+                bayar = "Transfer"
+                break
+            else:
+                print(f"\n{'Harap Masukkan Input Yang Valid!':^78}")
+
+
+        transaksi_df = pd.read_csv('db/transactions.csv')
+
+        transaksi_id = ''.join(random.choices(daftar_huruf, k=6))
+        tanggal_sekarang = datetime.now().strftime('%d-%m-%Y')
+        transaksi_baru = []
+        total_harga = 0
+        for nama, harga, qty in zip(barang_fix, daftar_harga, quantitas):
+            transaksi_baru.append({
+                "Transaksi id": transaksi_id,
+                "Username": username,
+                "Nama Produk": nama,
+                "Harga": harga,
+                "Quantitas": qty,
+                "Tipe Pembayaran": bayar,
+                "Tanggal Pembuatan": tanggal_sekarang,
+                "Tanggal Konfirmasi": "",
+                "Konfirmasi": "",
+                "Lunas": ""
+            })
+            total_harga += harga * qty
+        
+        transaksi_df = pd.concat([transaksi_df, pd.DataFrame(transaksi_baru)], ignore_index=True)
+        transaksi_df.to_csv('db/transactions.csv', index=False)
+
+        df.to_csv('db/products.csv', index=False)
+        
+        os.system('cls')
+        print("=" * 78)
+        print(f"\n{'Struk Pembayaran':^78}\n")
+        print("=" * 78)
+        print(f"Transaksi ID : {transaksi_id}")
+        print(f"Username     : {username}")
+        print(f"Tanggal      : {tanggal_sekarang}")
+        print(f"Metode Bayar : {bayar}")
+        print("-" * 78)
+        print(f"{'Produk':<30} {'Harga':<15} {'Quantitas':<10} {'Subtotal':<15}")
+        print("-" * 78)
+        for nama, harga, qty in zip(barang_fix, daftar_harga, quantitas):
+            subtotal = harga * qty
+            print(f"{nama:<30} {harga:<15} {qty:<10} {subtotal:<15}")
+        print("-" * 78)
+        print(f"{'Total Harga':>65}: {total_harga}")
+        print("=" * 78)
+
+        if bayar == "Transfer":
+            print("\nSilahkan transfer ke rekening berikut untuk menyelesaikan transaksi:")
+            print("Bank ABC, No. Rekening: 1234567890, a.n. Toko SIJUPI\n")
+            print("=" * 78)
+        
+        return input('Tekan enter untuk keluar.....')
 
 
 def read() :

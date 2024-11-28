@@ -1,2 +1,3 @@
-Transaksi id, Username, Nama Produk, Quantitas, Tipe Pembayaran, Tanggal Pembuatan, Tanggal Konfirmasi, Konfirmasi, Lunas
-1, HailrnUser, Cangkul, 3, Cash, 10-11-2024, , , 
+Transaksi id,Username,Nama Produk,Harga,Quantitas,Tipe Pembayaran,Tanggal Pembuatan,Tanggal Konfirmasi,Konfirmasi,Lunas
+JPswGu,ariear,Clurit,20000,5,Transfer,29-11-2024,,,
+JPswGu,ariear,Cangkul Gas,70000,2,Transfer,29-11-2024,,,

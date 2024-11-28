@@ -25,20 +25,7 @@ def menu_awal():
         match pilih_menu:
             case '1':
                 os.system('cls')
-                daftar_produk = pd.read_csv('db/products.csv')
-                daftar_produk.index = daftar_produk.index + 1
-
-                header = "| {:^5} | {:^28} | {:^10} | {:^15} | {:^5} |".format("No", "Nama Produk", "Jenis", "Harga", "Stok")
-                garis = "-"* 79
-
-                print(f"\n{'Daftar Pupuk dan Alat Pertanian':^80}\n")
-                print(garis)
-                print(header)
-                print(garis)
-
-                for id, row in daftar_produk.iterrows():
-                    print("| {:^5} | {:<28} | {:>10} | {:>15} | {:>5} |".format(id, row['Nama Produk'], row['Jenis'], row['Harga'], row['Stock']))
-                    print(garis)
+                daftarBarang()
 
                 input("\nTekan Enter untuk kembali...")
                 os.system('cls')
@@ -191,10 +178,21 @@ def menu_utama(data_account):
             if pilih_menu == '1':
                 os.system('cls')
                 while True:
-                    lanjutanMenu = daftarBarang()
+                    daftarBarang()
+
+                    print(f"|{' ' * 78}|")
+                    print(f"|{'     Daftar Menu:':<78}|")
+                    print(f"|{'     1. Beli Produk':<78}|")
+                    print(f"|{'     2. Tambah Wishlist Produk':<78}|")
+                    print(f"|{'     3. Kembali':<78}|")
+                    print(f"|{' ' * 78}|")
+                    print("-" * 80)
+
+                    lanjutanMenu = input("\nPilih berdasarkan nomor menu : ")
                     if lanjutanMenu == "1":
-                        barang_mau_dibeli = beli_barang()
-                        print(barang_mau_dibeli)
+                        beli_barang(account[0])
+                        os.system('cls')
+                        continue
                     elif lanjutanMenu == "2":
                         tambah_wishlist(account[0])
                     elif lanjutanMenu == "3":

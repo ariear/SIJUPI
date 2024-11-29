@@ -5,6 +5,9 @@ import random
 from auth import enkripsi_password, verifikasi_password, daftar_huruf
 from auth import role_parse
 from datetime import datetime
+import pytz
+
+time_zone = pytz.timezone("Asia/Jakarta")
 
 def daftar_transaksi(username):
     os.system('cls')
@@ -225,6 +228,12 @@ def tambah_wishlist(username):
             os.system('cls')
             print(f"\n{'Input harus berupa angka, coba lagi.':^78}")
 
+def update_wishlist(column = False, before = False, after = False):
+    data_wishlist = pd.read_csv('db/wishlists.csv')
+    data_wishlist.loc[data_wishlist[column] == before, column] = after
+
+    data_wishlist.to_csv('db/wishlists.csv', index=False)
+
 
 def lihat_wishlist(username):
     os.system('cls')
@@ -382,6 +391,26 @@ def beli_barang(username):
         
         return input('Tekan enter untuk keluar.....')
 
+def notificationMsg(penerima = False, pesan = False):
+    if penerima and pesan:
+        data_notif = pd.read_csv('db/notifications.csv')
+        
+        data_baru_list = []
+        for topik in pesan:
+            for akun in penerima:
+                data_baru_list.append({
+                    "Username": akun,
+                    "Deskripsi": topik,
+                    "Tanggal": datetime.now(time_zone).strftime("%Y-%m-%d"),
+                    "Terbaca": False
+                })
+        
+        data_baru = pd.DataFrame(data_baru_list)
+        
+        data_notif = pd.concat([data_notif, data_baru], ignore_index=True)
+        
+        data_notif.to_csv("db/notifications.csv", index=False)
+    return
 
 def read() :
     data = pd.read_csv('db/products.csv')
@@ -409,22 +438,53 @@ def add():
     print("Data berhasil ditambahkan.")
     print(data)
 
-def update():
+def update(errorMsg = False):
+    os.system('cls')
+    
+    if errorMsg:
+        print(errorMsg)
+        
     data = pd.read_csv('db/products.csv')
     data.index = data.index + 1
     print(data)
         
     id_update = int(input("Masukkan ID yang ingin diupdate : ")) - 1
-    
-    Nama = input("Nama Produk\t: ")
-    Jenis = input("Jenis\t: ")                
-    Harga = int(input("Harga\t: "))
-    Stock = int(input("Stock\t: "))
-    
-    data.iloc[id_update] = [Nama, Jenis, Harga, Stock]
-    data.to_csv('db/products.csv', index=False)
-    print("Data telah diupdate!")
-    print(data)
+    if (id_update + 1) in data.index:
+        Nama = input("Nama Produk\t: ")
+        Jenis = input("Jenis\t: ")                
+        Harga = int(input("Harga\t: "))
+        Stock = int(input("Stock\t: "))
+        
+        nama_awal, jenis_awal, harga_awal, stock_awal = data.loc[(id_update + 1), ["Nama Produk", "Jenis", "Harga", "Stock"]]
+        
+        data.iloc[id_update] = [Nama, Jenis, Harga, Stock]
+        data.to_csv('db/products.csv', index=False)
+        
+        wishlistData = pd.read_csv('db/wishlists.csv')
+        filteredWishlist = wishlistData[wishlistData["Nama Produk"] == nama_awal ]
+        
+        if not filteredWishlist.empty:
+            username_list = filteredWishlist["Username"].tolist()
+            pesan = []
+            if Nama != nama_awal:
+                pesan.append(f"{nama_awal} telah diganti namanya menjadi {Nama}")
+                update_wishlist("Nama Produk", nama_awal, Nama)
+            if Jenis != jenis_awal:
+                pesan.append(f"Jenis barang dari {Nama} telah diganti menjadi Rp. {Jenis}")
+            if Harga != harga_awal:
+                pesan.append(f"Harga {Nama} telah diubah menjadi {Harga:,}")
+                update_wishlist("Harga", harga_awal, Harga)
+            if Stock != stock_awal:
+                pesan.append(f"Stock {Nama} sekarang adalah {Stock}")
+            notificationMsg(username_list, pesan)
+            
+        os.system('cls')
+        print("Data telah diupdate!")
+        print(data)
+    else:
+        update(f"Barang dengan ID {id_update + 1} tidak ada!")
+        return
+    return
     
 def delete():
     data = pd.read_csv('db/products.csv')
@@ -474,3 +534,58 @@ def kelola() :
             break
         else:
             print("Pilihan tidak valid.")
+        
+def notif_sudah_terbaca(username = False):
+    os.system('cls')
+    notif = pd.read_csv("db/notifications.csv")
+    notif = notif[(notif["Username"] == username) & (notif["Terbaca"] == True)]
+    notif = notif[["Deskripsi", "Tanggal"]]
+    notifikasi = notif.values.tolist()
+
+    for item in notifikasi:
+        print(f"{item[1]:^20}{item[0]}\n")
+    input("Tekan Enter Untuk Kembali...")
+    return
+
+def notif_belum_terbaca(username = False):
+    os.system('cls')
+    notif = pd.read_csv("db/notifications.csv")
+    notif = notif[(notif["Username"] == username) & (notif["Terbaca"] == False)]
+    if not notif.empty:
+        tampilkan_notif = notif[["Deskripsi", "Tanggal"]]
+        notifikasi = tampilkan_notif.values.tolist()
+
+        for item in notifikasi:
+            print(f"{item[1]:^20}{item[0]}\n")
+            
+        notif["Terbaca"] = True
+        notif.to_csv('db/notifications.csv', index=False)
+
+    input("Tekan Enter Untuk Kembali...")
+    return
+
+def notifikasi(username = False, errorMsg = False):
+    data_notifikasi = pd.read_csv("db/notifications.csv")
+    data_notifikasi = data_notifikasi[data_notifikasi["Username"] == username]
+    count_isread = f"({len(data_notifikasi[data_notifikasi['Terbaca'] == True])})" if len(data_notifikasi[data_notifikasi['Terbaca'] == True]) > 0 else ""
+    count_unread = f"({len(data_notifikasi[data_notifikasi['Terbaca'] == False])})" if len(data_notifikasi[data_notifikasi['Terbaca'] == False]) > 0 else ""
+        
+    os.system('cls')
+    
+    if errorMsg:
+        print(errorMsg)
+    
+    print(f"NOTIFIKASI\n1. Notifikasi Belum Terbaca {count_unread}\n2. Notifikasi Sudah Terbaca {count_isread}\n3. Kembali")
+    
+    menu = input("Silahkan Pilih Menu Notifikasi (1/2/3): ")
+    
+    if menu == "1":
+        notif_belum_terbaca(username)
+        notifikasi(username)
+    elif menu == "2":
+        notif_sudah_terbaca(username)
+        notifikasi(username)
+    elif menu == "3":
+        return
+    else:
+        notifikasi(username, "Input Tidak Valid!\n")

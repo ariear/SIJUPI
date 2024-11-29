@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 from auth import login, register, role_parse
-from lib import info_akun, daftarBarang, tambah_wishlist, lihat_wishlist, beli_barang, kelola, daftar_transaksi
+from lib import info_akun, daftarBarang, tambah_wishlist, lihat_wishlist, beli_barang, kelola, daftar_transaksi, notifikasi
 
 def menu_awal():
     while True:
@@ -209,7 +209,7 @@ def menu_utama(data_account):
             elif pilih_menu == '4':
                 lihat_wishlist(account[0])
             elif pilih_menu == '5':
-                print('notif')
+                notifikasi(account[0])
             elif pilih_menu == '6':
                 print(f"\n{'Terimakasih sudah berkunjung di toko kami 🙏':^78}")
                 return True

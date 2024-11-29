@@ -6,6 +6,88 @@ from auth import enkripsi_password, verifikasi_password, daftar_huruf
 from auth import role_parse
 from datetime import datetime
 
+def daftar_transaksi(username):
+    os.system('cls')
+    while True:
+        transaksi_df = pd.read_csv('db/transactions.csv')
+        
+        user_transaksi = transaksi_df[transaksi_df['Username'] == username]
+        
+        if user_transaksi.empty:
+            print("=" * 78)
+            print(f"{'Kamu belum pernah melakukan transaksi.':^78}")
+            print("=" * 78)
+            input("\nTekan enter untuk kembali...")
+            return
+        
+        print("-"*80)
+        print(f"|{' ' * 78}|")
+        print(f"|{'Daftar Pembelian':^78}|")
+        print(f"|{' ' * 78}|")
+        print("-"*80)
+        
+        print(f"| {'No':<5} {'Transaksi ID':<15} {'Tanggal':<15} {'Total Harga':<18} {'Status':<20}|")
+        print("-" * 80)
+        
+        grouped_transaksi = user_transaksi.groupby("Transaksi id")
+        daftar_transaksi = []
+        for i, (transaksi_id, group) in enumerate(grouped_transaksi, start=1):
+            total_harga = (group['Harga'] * group['Quantitas']).sum()
+            status = "Lunas" if group['Lunas'].iloc[0] == True else "Belum Lunas"
+            daftar_transaksi.append(transaksi_id)
+            tanggal = group['Tanggal Pembuatan'].iloc[0]
+
+            print(f"| {i:<5} {transaksi_id:<15} {tanggal:<15} {total_harga:<18} {status:<20}|")
+        
+        print("-" * 80)
+        
+        print("\n1. Lihat Struk")
+        print("2. Kembali")
+        
+        pilihan = input("\nPilih menu (1/2): ")
+        if pilihan == "1":
+            try:
+                transaksi_pilihan = int(input("Pilih transaksi berdasarkan nomor : "))
+                if 1 <= transaksi_pilihan <= len(daftar_transaksi):
+                    transaksi_id = daftar_transaksi[transaksi_pilihan - 1]
+                    transaksi_detail = user_transaksi[user_transaksi['Transaksi id'] == transaksi_id]
+                    
+                    os.system('cls')
+                    print("=" * 78)
+                    print(f"\n{'Struk Pembayaran':^78}\n")
+                    print("=" * 78)
+                    print(f"Transaksi ID : {transaksi_id}")
+                    print(f"Username     : {username}")
+                    print(f"Tanggal      : {transaksi_detail['Tanggal Pembuatan'].iloc[0]}")
+                    print(f"Metode Bayar : {transaksi_detail['Tipe Pembayaran'].iloc[0]}")
+                    print("-" * 78)
+                    print(f"{'Produk':<30} {'Harga':<15} {'Quantitas':<10} {'Subtotal':<15}")
+                    print("-" * 78)
+                    total_harga = 0
+                    for _, row in transaksi_detail.iterrows():
+                        subtotal = row['Harga'] * row['Quantitas']
+                        total_harga += subtotal
+                        print(f"{row['Nama Produk']:<30} {row['Harga']:<15} {row['Quantitas']:<10} {subtotal:<15}")
+                    print("-" * 78)
+                    print(f"{'Total Harga':>65}: {total_harga}")
+                    print("=" * 78)
+                    print("\n")
+                    input("Tekan enter untuk keluar....")
+                    os.system('cls')
+                else:
+                    os.system('cls')
+                    print(f"\n{'Transaksi tidak ada!! Pilih berdasarkan nomor!!':^78}")
+            except ValueError:
+                os.system('cls')
+                print(f"\n{'Input harus berupa angka!':^78}")
+        elif pilihan == "2":
+            os.system('cls')
+            return
+        else:
+            os.system('cls')
+            print(f"\n{'Input harus ada di menu dan berupa angka!':^78}")
+
+
 def info_akun(username):
     os.system('cls')
     accounts = pd.read_csv('db/accounts.csv')

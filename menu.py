@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 from auth import login, register, role_parse
-from lib import info_akun, daftarBarang, tambah_wishlist, lihat_wishlist, beli_barang, kelola
+from lib import info_akun, daftarBarang, tambah_wishlist, lihat_wishlist, beli_barang, kelola, daftar_transaksi
 
 def menu_awal():
     while True:
@@ -203,7 +203,7 @@ def menu_utama(data_account):
                         print(f"\n{'⚠  Input harus ada di menu dan berupa angka! ⚠':^78}\n")
                         continue
             elif pilih_menu == '2':
-                print('daftar beli')
+                daftar_transaksi(account[0])
             elif pilih_menu == '3':
                 account[0] = info_akun(account[0])
             elif pilih_menu == '4':

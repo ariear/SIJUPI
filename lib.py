@@ -97,16 +97,32 @@ def info_akun(username):
     account = accounts[accounts['Username'] == username].iloc[0]
     
     while True:
-        print(f"\n{'INFO AKUN':^30}\n")
-        print(f"Username  : {account['Username']}")
-        print(f"Role      : {role_parse(account['Role'])}")
-        print("\n1. Update Username\n2. Update Password\n3. Kembali ke Menu Utama\n")
+        print("-"*80)
+        print(f"|{' ' * 78}|")
+        print(f"|{'INFO AKUN':^78}|")
+        print(f"|{' ' * 78}|")
+        print("-"*80)
+        
+        print(f"|    {'Username  : ' + account['Username']:<74}|")
+        print(f"|    {'Role      : ' + role_parse(account['Role']):<74}|")
+        print("-"*80)
+
+        print(f"|{'     Daftar menu :':<78}|")
+        print(f"|{'     1. Update Username':<78}|")
+        print(f"|{'     2. Update Password':<78}|")
+        print(f"|{'     3. Kembali':<78}|")
+        print(f"|{' ' * 78}|")
+        print("-" * 80)
         pilih = input("Pilih berdasarkan nomor: ")
         
         match pilih:
             case '1':
                 os.system('cls')
-                print(f"{'UPDATE USERNAME':^30}\n")
+                print("-"*80)
+                print(f"|{' ' * 78}|")
+                print(f"|{'UPDATE USERNAME':^78}|")
+                print(f"|{' ' * 78}|")
+                print("-"*80)
                 
                 while True:
                     new_username = input(f"Masukkan Username baru : ").strip()
@@ -127,7 +143,11 @@ def info_akun(username):
                 return username
             case '2':
                 os.system('cls')
-                print(f"{'UPDATE PASSWORD':^30}\n")
+                print("-"*80)
+                print(f"|{' ' * 78}|")
+                print(f"|{'UPDATE PASSWORD':^78}|")
+                print(f"|{' ' * 78}|")
+                print("-"*80)
                 
                 while True:
                     old_password = input("Masukkan Password lama: ").strip()
@@ -135,8 +155,12 @@ def info_akun(username):
                         break
                     else:
                         os.system('cls')
-                        print(f"{'UPDATE PASSWORD':^30}\n")
-                        print("Password lama salah!\n")
+                        print("-"*80)
+                        print(f"|{' ' * 78}|")
+                        print(f"|{'UPDATE PASSWORD':^78}|")
+                        print(f"|{' ' * 78}|")
+                        print("-"*80)
+                        print(f"\n{'⚠  Password lama salah! ⚠':^78}\n")
                 
                 while True:
                     new_password = input("Masukkan Password baru (minimal 8 karakter): ").strip()
@@ -145,12 +169,12 @@ def info_akun(username):
                         if new_password == confirm_password:
                             accounts.loc[accounts['Username'] == username, 'Password'] = enkripsi_password(new_password)
                             accounts.to_csv('db/accounts.csv', index=False)
-                            print("\nPassword berhasil diperbarui!")
+                            print(f"\n{'Password berhasil diperbarui!':^78}\n")
                             break
                         else:
-                            print("Password baru dan konfirmasi tidak cocok!\n")
+                            print(f"\n{'⚠  Password baru dan konfirmasi tidak cocok! ⚠':^78}\n")
                     else:
-                        print("Password minimal harus 8 karakter dan tidak boleh kosong!\n")
+                        print(f"\n{'⚠  Password minimal harus 8 karakter dan tidak boleh kosong! ⚠':^78}\n")
                 
                 input("\nTekan Enter untuk kembali...")
                 os.system('cls')
@@ -160,7 +184,7 @@ def info_akun(username):
                 return username
             case _:
                 os.system('cls')
-                print("\nInput harus ada di menu dan berupa angka!\n")
+                print(f"\n{'⚠  Input harus ada di menu dan berupa angka! ⚠':^78}\n")
                 continue
 
 def daftarBarang():

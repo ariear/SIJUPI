@@ -591,31 +591,46 @@ def kelola() :
         
 def notif_sudah_terbaca(username = False):
     os.system('cls')
+    print("-"*80)
+    print(f"|{' ' * 78}|")
+    print(f"|{'NOTIFIKASI SUDAH TERBACA':^78}|")
+    print(f"|{' ' * 78}|")
+    print("-"*80)
+
     notif = pd.read_csv("db/notifications.csv")
     notif = notif[(notif["Username"] == username) & (notif["Terbaca"] == True)]
     notif = notif[["Deskripsi", "Tanggal"]]
     notifikasi = notif.values.tolist()
 
-    print("{:^20}  {:} \n".format("Tanggal", "Deskripsi"))
+    print("\n{:^20}  {:} \n".format("Tanggal", "Deskripsi"))
     for item in notifikasi:
         print(f"{item[1]:^20}{item[0]}\n")
     input("Tekan Enter Untuk Kembali...")
     return
 
-def notif_belum_terbaca(username = False):
+def notif_belum_terbaca(username=False):
     os.system('cls')
-    notif = pd.read_csv("db/notifications.csv")
-    notif = notif[(notif["Username"] == username) & (notif["Terbaca"] == False)]
-    if not notif.empty:
-        tampilkan_notif = notif[["Deskripsi", "Tanggal"]]
+    print("-" * 80)
+    print(f"|{' ' * 78}|")
+    print(f"|{'NOTIFIKASI BELUM TERBACA':^78}|")
+    print(f"|{' ' * 78}|")
+    print("-" * 80)
+
+    all_notif = pd.read_csv("db/notifications.csv")
+    
+    user_notif = all_notif[(all_notif["Username"] == username) & (all_notif["Terbaca"] == False)]
+    
+    if not user_notif.empty:
+        tampilkan_notif = user_notif[["Deskripsi", "Tanggal"]]
         notifikasi = tampilkan_notif.values.tolist()
 
-        print("{:^20}  {:} \n".format("Tanggal", "Deskripsi"))
+        print("\n{:^20}  {:} \n".format("Tanggal", "Deskripsi"))
         for item in notifikasi:
             print(f"{item[1]:^20}{item[0]}\n")
-            
-        notif["Terbaca"] = True
-        notif.to_csv('db/notifications.csv', index=False)
+        
+        all_notif.loc[(all_notif["Username"] == username) & (all_notif["Terbaca"] == False), "Terbaca"] = True
+        
+        all_notif.to_csv('db/notifications.csv', index=False)
     else:
         print(f"\n{'Tidak ada notifikasi untuk saat ini':^78}\n")
 

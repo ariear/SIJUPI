@@ -566,6 +566,7 @@ def notif_sudah_terbaca(username = False):
     notif = notif[["Deskripsi", "Tanggal"]]
     notifikasi = notif.values.tolist()
 
+    print("{:^20}  {:} \n".format("Tanggal", "Deskripsi"))
     for item in notifikasi:
         print(f"{item[1]:^20}{item[0]}\n")
     input("Tekan Enter Untuk Kembali...")
@@ -579,11 +580,14 @@ def notif_belum_terbaca(username = False):
         tampilkan_notif = notif[["Deskripsi", "Tanggal"]]
         notifikasi = tampilkan_notif.values.tolist()
 
+        print("{:^20}  {:} \n".format("Tanggal", "Deskripsi"))
         for item in notifikasi:
             print(f"{item[1]:^20}{item[0]}\n")
             
         notif["Terbaca"] = True
         notif.to_csv('db/notifications.csv', index=False)
+    else:
+        print(f"\n{'Tidak ada notifikasi untuk saat ini':^78}\n")
 
     input("Tekan Enter Untuk Kembali...")
     return
@@ -591,15 +595,25 @@ def notif_belum_terbaca(username = False):
 def notifikasi(username = False, errorMsg = False):
     data_notifikasi = pd.read_csv("db/notifications.csv")
     data_notifikasi = data_notifikasi[data_notifikasi["Username"] == username]
-    count_isread = f"({len(data_notifikasi[data_notifikasi['Terbaca'] == True])})" if len(data_notifikasi[data_notifikasi['Terbaca'] == True]) > 0 else ""
     count_unread = f"({len(data_notifikasi[data_notifikasi['Terbaca'] == False])})" if len(data_notifikasi[data_notifikasi['Terbaca'] == False]) > 0 else ""
         
     os.system('cls')
     
     if errorMsg:
-        print(errorMsg)
+        print(f"\n{errorMsg:^78}\n")
     
-    print(f"NOTIFIKASI\n1. Notifikasi Belum Terbaca {count_unread}\n2. Notifikasi Sudah Terbaca {count_isread}\n3. Kembali")
+    print("-"*80)
+    print(f"|{' ' * 78}|")
+    print(f"|{'NOTIFIKASI':^78}|")
+    print(f"|{' ' * 78}|")
+    print("-"*80)
+
+    print(f"|{'     Daftar menu :':<78}|")
+    print(f"|{'     1. Notifikasi Belum Terbaca ' + count_unread:<78}|")
+    print(f"|{'     2. Notifikasi Sudah Terbaca ':<78}|")
+    print(f"|{'     3. Kembali':<78}|")
+    print(f"|{' ' * 78}|")
+    print("-" * 80)
     
     menu = input("Silahkan Pilih Menu Notifikasi (1/2/3): ")
     
@@ -610,6 +624,7 @@ def notifikasi(username = False, errorMsg = False):
         notif_sudah_terbaca(username)
         notifikasi(username)
     elif menu == "3":
+        os.system('cls')
         return
     else:
-        notifikasi(username, "Input Tidak Valid!\n")
+        notifikasi(username, "Input haru ada di menu dan berupa angka!")

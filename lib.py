@@ -258,34 +258,67 @@ def update_wishlist(column = False, before = False, after = False):
 
 def lihat_wishlist(username):
     os.system('cls')
+    while True:
 
-    wishlists = pd.read_csv('db/wishlists.csv')
-    user_wishlists = wishlists[wishlists['Username'] == username]
+        wishlists = pd.read_csv('db/wishlists.csv')
+        user_wishlists = wishlists[wishlists['Username'] == username]
 
-    os.system('cls')
-    print("-"*80)
-    print(f"|{' ' * 78}|")
-    print(f"|{'WISHLIST ANDA':^78}|")
-    print(f"|{' ' * 78}|")
-    print("-"*80)
+        print("-" * 80)
+        print(f"|{' ' * 78}|")
+        print(f"|{'WISHLIST ANDA':^78}|")
+        print(f"|{' ' * 78}|")
+        print("-" * 80)
 
-    if user_wishlists.empty:
-        print("Kamu belum memiliki produk di wishlist.")
-    else:
-        user_wishlists = user_wishlists.reset_index(drop=True)
-        user_wishlists.index += 1
+        if user_wishlists.empty:
+            print(f"\n{'Kamu belum memiliki produk di wishlist.':^78}\n")
+        else:
+            user_wishlists = user_wishlists.reset_index(drop=True)
+            user_wishlists.index += 1
 
-        header = "| {:^5} | {:^28} | {:^37} |".format("No", "Nama Produk", "Harga")
-        garis = "-"* 79
-        print(garis)
-        print(header)
-        print(garis)
-        for id, row in user_wishlists.iterrows():
-            print("| {:^5} | {:<28} | {:>37} |".format(id, row['Nama Produk'], row['Harga']))
+            header = "| {:^5} | {:^28} | {:^37} |".format("No", "Nama Produk", "Harga")
+            garis = "-" * 79
             print(garis)
-    
-    input("\nTekan Enter untuk kembali...")
-    os.system('cls')
+            print(header)
+            print(garis)
+            for id, row in user_wishlists.iterrows():
+                print("| {:^5} | {:<28} | {:>37} |".format(id, row['Nama Produk'], row['Harga']))
+                print(garis)
+
+        print("\nMenu:")
+        print("1. Hapus produk")
+        print("2. Kembali")
+        
+        choice = input("Pilih menu (1/2): ").strip()
+
+        if choice == '1':
+            if user_wishlists.empty:
+                input("\nWishlist kosong. Tekan Enter untuk kembali...")
+                continue
+
+            try:
+                to_delete = int(input("\nPilih produk berdasarkan nomor : ").strip())
+                if 1 <= to_delete <= len(user_wishlists):
+                    selected_row = user_wishlists.iloc[to_delete - 1]
+                    wishlists = wishlists[~((wishlists['Username'] == username) &
+                                            (wishlists['Nama Produk'] == selected_row['Nama Produk']) &
+                                            (wishlists['Harga'] == selected_row['Harga']))]
+                    
+                    wishlists.to_csv('db/wishlists.csv', index=False)
+                    
+                    print(f"\n{'Produk berhasil dihapus dari wishlist':^78}\n")
+                else:
+                    print(f"\n{'⚠  Produk yang kamu pilih tidak ada! Coba lagi ⚠':^78}\n")
+            except ValueError:
+                print(f"\n{'⚠  Masukkan nomor yang valid! ⚠':^78}\n")
+            input("\nTekan Enter untuk kembali...")
+            os.system('cls')
+        
+        elif choice == '2':
+            os.system('cls')
+            break
+        else:
+            os.system('cls')
+            print(f"\n{'Input haru ada di menu dan berupa angka!':^78}\n")
 
 def beli_barang(username):
     os.system('cls')

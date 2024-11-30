@@ -441,6 +441,8 @@ def beli_barang(username):
         if bayar == "Transfer":
             print("\nSilahkan transfer ke rekening berikut untuk menyelesaikan transaksi:")
             print("Bank ABC, No. Rekening: 1234567890, a.n. Toko SIJUPI\n")
+
+            print("\nKonfirmasi pembayaran melalui nomor berikut : 0888382382382 \n")
             print("=" * 78)
         
         return input('Tekan enter untuk keluar.....')

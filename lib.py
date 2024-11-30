@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import csv
 import random
-from auth import enkripsi_password, verifikasi_password, daftar_huruf
+from auth import enkripsi_password, verifikasi_password, daftar_huruf, register
 from auth import role_parse
 from datetime import datetime
 
@@ -737,3 +737,264 @@ def konfirmasi_pembelian():
         else:
             os.system('cls')
             print(f"\n{'⚠  Input harus ada di menu dan berupa angka! ⚠':^78}\n")
+            
+
+def hapus_akun(username = False, msg = False):
+    os.system('cls')
+    data_akun = pd.read_csv('db/accounts.csv')
+    data_akun.index = data_akun.index + 1
+    data_dihapus = data_akun[data_akun["Username"] == username]
+    data_akun = data_akun[data_akun["Username"] != username]
+    
+    if msg:
+        print(msg)
+    
+    print("Akun Yang Akan Dihapus :\n")
+    for id, row in data_dihapus.iterrows():
+        role = role_parse(row['Role'])
+        print("-"* 74)
+        print("| {:^5} | {:^40} | {:^19} |".format(id, row['Username'], role))
+        print("-"* 74)
+    
+    konfirmasi = input("\nApakah Anda Yakin ? (y/n): ")
+    
+    if konfirmasi == "y" or konfirmasi == "Y":
+        data_akun.to_csv('db/accounts.csv', index=False)
+        return True
+    elif konfirmasi == "n" or konfirmasi == "N":
+        return False
+    else:
+        return hapus_akun(username, "Input Tidak Valid!\n")
+
+def update_username(username = False, msg = False):
+    os.system('cls')
+    data_akun = pd.read_csv('db/accounts.csv')
+    data_akun.index = data_akun.index + 1
+    data_diubah = data_akun[data_akun["Username"] == username]
+    
+    if msg:
+        print(msg)
+    
+    usernameBaru = input("\nSilahkan Masukkan Username Baru Untuk Akun Tersebut (Minimal 3 Character): ").strip()
+    
+    if not usernameBaru:
+        return update_username(username, "Username tidak boleh hanya berupa spasi!")
+    
+    if len(usernameBaru) < 3:
+        return update_username(username, "Username Akun Minimal 3 character!")
+
+    data_akun.loc[data_akun["Username"] == username, "Username"] = usernameBaru
+    
+    print(f"\nUsername dari {username} akan diubah...\n{username}  ->  {usernameBaru}")
+    
+    konfirmasi = input("\nApakah Anda Yakin ? (y/n): ")
+    
+    if konfirmasi == "y" or konfirmasi == "Y":
+        data_akun.to_csv('db/accounts.csv', index=False)
+        return usernameBaru
+    elif konfirmasi == "n" or konfirmasi == "N":
+        return False
+    else:
+        return update_username(username, "Input Tidak Valid!\n")
+
+def reset_password(username = False, msg = False):
+    os.system('cls')
+    data_akun = pd.read_csv('db/accounts.csv')
+    data_akun.index = data_akun.index + 1
+    data_diubah = data_akun[data_akun["Username"] == username]
+    
+    if msg:
+        print(msg)
+
+    data_akun.loc[data_akun["Username"] == username, "Password"] = ""
+    
+    print(f"Password dari {username} akan direset...")
+    
+    konfirmasi = input("\nApakah Anda Yakin ? (y/n): ")
+    
+    if konfirmasi == "y" or konfirmasi == "Y":
+        data_akun.to_csv('db/accounts.csv', index=False)
+        return True
+    elif konfirmasi == "n" or konfirmasi == "N":
+        return False
+    else:
+        return reset_password(username, "Input Tidak Valid!\n")
+
+def update_role(username = False, msg = False):
+    os.system('cls')
+    data_akun = pd.read_csv('db/accounts.csv')
+    data_akun.index = data_akun.index + 1
+    data_diubah = data_akun[data_akun["Username"] == username]
+    
+    if msg:
+        print(msg)
+    
+    print("\n🎟  ROLE:"
+        +"\n1.  Admin"
+        +"\n2.  Pembeli"
+        +"\n")
+    roleBaru = input("Silahkan Masukkan Role Baru Untuk Akun Tersebut (1/2): ")
+    
+    if not roleBaru.isdigit():
+        return update_role(username, "Input Harus Berupa Nomor Dari List Role!")
+    
+    roleBaru = int(roleBaru)
+    
+    if roleBaru not in [1, 2]:
+        return update_role(username, "Input Harus Berupa Nomor Dari List Role!")
+
+    data_akun.loc[data_akun["Username"] == username, "Role"] = roleBaru
+    
+    role_awal = data_diubah["Role"].iloc[0]
+    role_awal = role_parse(int(role_awal))
+    role_baru = role_parse(roleBaru)
+    
+    print(f"\nRole dari {username} akan diubah...\n{role_awal}  ->  {role_baru}")
+    
+    konfirmasi = input("\nApakah Anda Yakin ? (y/n): ")
+    
+    if konfirmasi == "y" or konfirmasi == "Y":
+        data_akun.to_csv('db/accounts.csv', index=False)
+        return True
+    elif konfirmasi == "n" or konfirmasi == "N":
+        return False
+    else:
+        return update_role(username, "Input Tidak Valid!\n")
+
+def menu_update(username = False, msg = False):
+    os.system('cls')
+    data_akun = pd.read_csv('db/accounts.csv')
+    data_akun.index = data_akun.index + 1
+    data_dihapus = data_akun[data_akun["Username"] == username]
+    
+    if msg:
+        print(msg)
+    
+    print("Akun Yang Akan Diperbarui :\n")
+    for id, row in data_dihapus.iterrows():
+        role = role_parse(row['Role'])
+        print("-"* 74)
+        print("| {:^5} | {:^40} | {:^19} |".format(id, row['Username'], role))
+        print("-"* 74)
+    
+    print("\nMenu Perbarui:\n1. Perbarui Username\n2. Reset Password\n3. Perbarui Role\n4. Kembali")
+    
+    konfirmasi = input("\nSilahkan pilih menu dari list di atas (1/2/3/4): ")
+    
+    if konfirmasi == "1":
+        result = update_username(username)
+        if result:
+            return menu_update(result, "Role Berhasil Diperbarui")
+        else:
+            return menu_update(username, "Role Batal Diperbarui")
+    elif konfirmasi == "2":
+        result = reset_password(username)
+        if result:
+            return menu_update(username, "Password Telah Direset!")
+        else:
+            return menu_update(username, "Password Batal Direset!")
+    elif konfirmasi == "3":
+        result = update_role(username)
+        if result:
+            return menu_update(username, "Role Berhasil Diperbarui")
+        else:
+            return menu_update(username, "Role Batal Diperbarui")
+    elif konfirmasi == "4":
+        return
+    else:
+        return menu_update(username, "Input Harus Berupa Angka Dan Sesuai Dengan Nomor Urut Menu!\n")
+    
+
+def daftar_akun(menu = False, msg = False):
+    os.system('cls')
+    data_akun = pd.read_csv('db/accounts.csv')
+    data_akun = data_akun[["Username", "Role"]]
+    data_akun.index = data_akun.index + 1
+
+    header = "| {:^5} | {:^40} | {:^19} |".format("No", "Username", "Role")
+    garis = "-"* 74
+
+
+    print("-"*74)
+    print(f"|{' ' * 72}|")
+    print(f"|{'Daftar Akun':^72}|")
+    print(f"|{' ' * 72}|")
+    print("-"*74)
+
+    print(garis)
+    print(header)
+    print(garis)
+
+    for id, row in data_akun.iterrows():
+        role = role_parse(row['Role'])
+        print("| {:^5} | {:^40} | {:^19} |".format(id, row['Username'], role))
+        print(garis)
+    
+    if msg:
+        print(msg)
+    
+    if menu == "Perbarui":
+        akun_diperbarui = input("Silahkan Masukkan Nomor Urut Dari Akun Yang Akan Diperbarui: ")
+        
+        if not akun_diperbarui.isdigit():
+            daftar_akun("Perbarui", "\nInput Harus Berupa Angka!\n")
+        
+        akun_diperbarui = data_akun.iloc[int(akun_diperbarui) - 1]
+        
+        if akun_diperbarui.empty:
+            daftar_akun("Hapus", "\nAkun Tersebut Tidak Ada Di Daftar Akun!\n")
+        
+        konfirmasi = menu_update(akun_diperbarui["Username"])
+        daftar_akun()
+        
+    elif menu == "Hapus":
+        akun_dihapus = input("Silahkan Masukkan Nomor Urut Dari Akun Yang Akan Dihapus: ")
+        
+        if not akun_dihapus.isdigit():
+            daftar_akun("Hapus", "\nInput Harus Berupa Angka!\n")
+        
+        akun_dihapus = data_akun.iloc[int(akun_dihapus) - 1]
+        
+        if akun_dihapus.empty:
+            daftar_akun("Hapus", "\nAkun Tersebut Tidak Ada Di Daftar Akun!\n")
+        
+        konfirmasi = hapus_akun(akun_dihapus["Username"])
+        
+        if konfirmasi:
+            daftar_akun(msg="Akun Berhasil Dihapus!")
+        else:
+            daftar_akun(msg="Akun Batal Dihapus!")
+        
+    else:
+        input("Tekan Enter Untuk Kembali...\n")
+        return
+
+def kelola_akun(errorMsg = False):
+    os.system('cls')
+    
+    if errorMsg:
+        print(errorMsg)
+    
+    print("Menu Kelola Akun\n1. Tambah Akun\n2. Lihat Daftar Akun\n3. Perbarui Data Akun\n4. Hapus Akun\n5. Kembali")
+    menu_lanjutan = input("Silahkan Pilih Menu Berdasarkan Nomornya (1/2/3/4/5): ")
+    
+    if menu_lanjutan == "1":
+        register(superAdmin=True)
+        return kelola_akun()
+    elif menu_lanjutan == "2":
+        daftar_akun()
+        return kelola_akun()
+    elif menu_lanjutan == "3":
+        daftar_akun("Perbarui")
+        return kelola_akun()
+    elif menu_lanjutan == "4":
+        daftar_akun("Hapus")
+        return kelola_akun()
+    elif menu_lanjutan == "5":
+        return
+    else:
+        return kelola_akun("Input Harus Berupa Nomor Sesuai Nomor Urut Menu!\n")
+    
+    
+    
+    

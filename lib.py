@@ -720,7 +720,7 @@ def konfirmasi_pembelian():
                 nomor = int(input("Pilih transaksi berdasarkan nomor : "))
                 if 1 <= nomor <= len(daftar_transaksi):
                     transaksi_id_pilih = daftar_transaksi[nomor - 1]
-                    transaksi_df.loc[transaksi_df["Transaksi id"] == transaksi_id_pilih, ["Konfirmasi", "Lunas"]] = [True, True]
+                    transaksi_df.loc[transaksi_df["Transaksi id"] == transaksi_id_pilih, ["Tanggal Konfirmasi", "Konfirmasi", "Lunas"]] = [datetime.now().strftime('%d-%m-%Y'), True, True]
                     transaksi_df.to_csv('db/transactions.csv', index=False)
 
                     os.system('cls')

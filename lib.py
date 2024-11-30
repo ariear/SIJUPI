@@ -675,3 +675,65 @@ def notifikasi(username = False, errorMsg = False):
         return
     else:
         notifikasi(username, "Input haru ada di menu dan berupa angka!")
+
+
+def konfirmasi_pembelian():
+    os.system('cls')
+    while True:
+        transaksi_df = pd.read_csv('db/transactions.csv')
+        tf_belum_lunas = transaksi_df[transaksi_df['Lunas'] != True]
+
+        if tf_belum_lunas.empty:
+            print("=" * 78)
+            print(f"{'Belum ada pembelian untuk dikonfirmasi':^78}")
+            print("=" * 78)
+            input("\nTekan enter untuk kembali...")
+            return
+
+        print("-"*80)
+        print(f"|{' ' * 78}|")
+        print(f"|{'Daftar Pembelian yang belum dikonfirmasi':^78}|")
+        print(f"|{' ' * 78}|")
+        print("-"*80)
+
+        print(f"| {'No':<5} {'Transaksi ID':<15} {'Nama Pembeli':<20} {'Tanggal':<15} {'Total Harga':<17} |")
+        print("-" * 80)
+
+        grouped_transaksi = tf_belum_lunas.groupby("Transaksi id")
+        daftar_transaksi = []
+        for i, (transaksi_id, group) in enumerate(grouped_transaksi, start=1):
+            total_harga = (group['Harga'] * group['Quantitas']).sum()
+            daftar_transaksi.append(transaksi_id)
+            tanggal = group['Tanggal Pembuatan'].iloc[0]
+
+            print(f"| {i:<5} {transaksi_id:<15} {group['Username'].iloc[0]:<20} {tanggal:<15} {total_harga:<17} |")
+        print("-" * 80)
+
+        print("\nMenu:")
+        print("1. Pilih berdasarkan nomor")
+        print("2. Keluar")
+
+        pilihan = input("Pilih menu: ")
+
+        if pilihan == "1":
+            try:
+                nomor = int(input("Pilih transaksi berdasarkan nomor : "))
+                if 1 <= nomor <= len(daftar_transaksi):
+                    transaksi_id_pilih = daftar_transaksi[nomor - 1]
+                    transaksi_df.loc[transaksi_df["Transaksi id"] == transaksi_id_pilih, ["Konfirmasi", "Lunas"]] = [True, True]
+                    transaksi_df.to_csv('db/transactions.csv', index=False)
+
+                    os.system('cls')
+                    print(f"\n{'Transaksi ID ' +  transaksi_id_pilih + ' berhasil dikonfirmasi!':^78}\n")
+                else:
+                    os.system('cls')
+                    print(f"\n{'⚠  Transaksi tidak ada! Coba lagi ⚠':^78}\n")
+            except ValueError:
+                os.system('cls')
+                print(f"\n{'⚠  Input harus berupa angka! ⚠':^78}\n")
+        elif pilihan == "2":
+            os.system('cls')
+            break
+        else:
+            os.system('cls')
+            print(f"\n{'⚠  Input harus ada di menu dan berupa angka! ⚠':^78}\n")

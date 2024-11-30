@@ -742,7 +742,6 @@ def konfirmasi_pembelian():
 def hapus_akun(username = False, msg = False):
     os.system('cls')
     data_akun = pd.read_csv('db/accounts.csv')
-    data_akun.index = data_akun.index + 1
     data_dihapus = data_akun[data_akun["Username"] == username]
     data_akun = data_akun[data_akun["Username"] != username]
     
@@ -864,7 +863,6 @@ def update_role(username = False, msg = False):
 def menu_update(username = False, msg = False):
     os.system('cls')
     data_akun = pd.read_csv('db/accounts.csv')
-    data_akun.index = data_akun.index + 1
     data_dihapus = data_akun[data_akun["Username"] == username]
     
     if msg:
@@ -905,11 +903,12 @@ def menu_update(username = False, msg = False):
         return menu_update(username, "Input Harus Berupa Angka Dan Sesuai Dengan Nomor Urut Menu!\n")
     
 
-def daftar_akun(menu = False, msg = False):
+def daftar_akun(menu = False, msg = False, username = False):
     os.system('cls')
     data_akun = pd.read_csv('db/accounts.csv')
     data_akun = data_akun[["Username", "Role"]]
-    data_akun.index = data_akun.index + 1
+    data_akun = data_akun[data_akun["Username"] != username]
+    data_akun.index = range(1, len(data_akun) + 1)
 
     header = "| {:^5} | {:^40} | {:^19} |".format("No", "Username", "Role")
     garis = "-"* 74
@@ -937,39 +936,39 @@ def daftar_akun(menu = False, msg = False):
         akun_diperbarui = input("Silahkan Masukkan Nomor Urut Dari Akun Yang Akan Diperbarui: ")
         
         if not akun_diperbarui.isdigit():
-            daftar_akun("Perbarui", "\nInput Harus Berupa Angka!\n")
+            daftar_akun(menu="Perbarui", msg="\nInput Harus Berupa Angka!\n", username=username)
         
         akun_diperbarui = data_akun.iloc[int(akun_diperbarui) - 1]
         
         if akun_diperbarui.empty:
-            daftar_akun("Hapus", "\nAkun Tersebut Tidak Ada Di Daftar Akun!\n")
+            daftar_akun(menu="Hapus", msg="\nAkun Tersebut Tidak Ada Di Daftar Akun!\n", username=username)
         
         konfirmasi = menu_update(akun_diperbarui["Username"])
-        daftar_akun()
+        daftar_akun(username=username)
         
     elif menu == "Hapus":
         akun_dihapus = input("Silahkan Masukkan Nomor Urut Dari Akun Yang Akan Dihapus: ")
         
         if not akun_dihapus.isdigit():
-            daftar_akun("Hapus", "\nInput Harus Berupa Angka!\n")
+            daftar_akun("Hapus", "\nInput Harus Berupa Angka!\n", username=username)
         
         akun_dihapus = data_akun.iloc[int(akun_dihapus) - 1]
         
         if akun_dihapus.empty:
-            daftar_akun("Hapus", "\nAkun Tersebut Tidak Ada Di Daftar Akun!\n")
+            daftar_akun("Hapus", "\nAkun Tersebut Tidak Ada Di Daftar Akun!\n", username=username)
         
         konfirmasi = hapus_akun(akun_dihapus["Username"])
         
         if konfirmasi:
-            daftar_akun(msg="Akun Berhasil Dihapus!")
+            daftar_akun(msg="Akun Berhasil Dihapus!", username=username)
         else:
-            daftar_akun(msg="Akun Batal Dihapus!")
+            daftar_akun(msg="Akun Batal Dihapus!", username=username)
         
     else:
         input("Tekan Enter Untuk Kembali...\n")
         return
 
-def kelola_akun(errorMsg = False):
+def kelola_akun(errorMsg = False, username = False):
     os.system('cls')
     
     if errorMsg:
@@ -980,20 +979,20 @@ def kelola_akun(errorMsg = False):
     
     if menu_lanjutan == "1":
         register(superAdmin=True)
-        return kelola_akun()
+        return kelola_akun(username=username)
     elif menu_lanjutan == "2":
-        daftar_akun()
-        return kelola_akun()
+        daftar_akun(username=username)
+        return kelola_akun(username=username)
     elif menu_lanjutan == "3":
-        daftar_akun("Perbarui")
-        return kelola_akun()
+        daftar_akun(menu="Perbarui", username=username)
+        return kelola_akun(username=username)
     elif menu_lanjutan == "4":
-        daftar_akun("Hapus")
-        return kelola_akun()
+        daftar_akun(menu="Hapus", username=username)
+        return kelola_akun(username=username)
     elif menu_lanjutan == "5":
         return
     else:
-        return kelola_akun("Input Harus Berupa Nomor Sesuai Nomor Urut Menu!\n")
+        return kelola_akun("Input Harus Berupa Nomor Sesuai Nomor Urut Menu!\n", username=username)
     
     
     

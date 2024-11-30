@@ -120,7 +120,7 @@ def menu_utama(data_account):
             elif pilih_menu == '6':
                 print('lihat notif')
             elif pilih_menu == '7':
-                kelola_akun()
+                kelola_akun(username=account[0])
             elif pilih_menu == '8':
                 print('update no rek')
             elif pilih_menu == '9':

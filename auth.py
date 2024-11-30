@@ -63,9 +63,9 @@ def register(errorMsg = False, superAdmin = False):
     print("-"*80)
     
     while True:
-        username = input("\n🙍 Masukkan Username anda (minimal 3 character!): ").strip()
-        password = input("🔑 Masukkan Password anda (minimal 8 character!): ").strip()
-        confirmedPassword = input("🔐 Konfirmasi Ulang Password anda: ").strip()
+        username = input("\n🙍 Masukkan Username (minimal 3 character!): ").strip()
+        password = input("🔑 Masukkan Password (minimal 8 character!): ").strip()
+        confirmedPassword = input("🔐 Konfirmasi Ulang Password: ").strip()
         role = None
 
         if not username:

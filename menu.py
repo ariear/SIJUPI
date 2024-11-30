@@ -102,7 +102,8 @@ def menu_utama(data_account):
             print(f"|{'     6. Lihat Notifikasi':<78}|")
             print(f"|{'     7. Kelola akun':<78}|")
             print(f"|{'     8. Perbarui Nomor Rekening Toko':<78}|")
-            print(f"|{'     9. Logout':<78}|")
+            print(f"|{'     9. Info Akun':<78}|")
+            print(f"|{'     10. Logout':<78}|")
             print(f"|{' ' * 78}|")
             print("-" * 80)
         
@@ -124,6 +125,8 @@ def menu_utama(data_account):
             elif pilih_menu == '8':
                 print('update no rek')
             elif pilih_menu == '9':
+                account[0] = info_akun(account[0])
+            elif pilih_menu == '10':
                 print(f"\n{'Terimakasih sudah berkunjung di toko kami 🙏':^78}")
                 return True
             else:
@@ -138,7 +141,8 @@ def menu_utama(data_account):
             print(f"|{'     4. Kelola Pengeluaran Toko':<78}|")
             print(f"|{'     5. Laporan Penjualan dan Pengeluaran':<78}|")
             print(f"|{'     6. Lihat Notifikasi':<78}|")
-            print(f"|{'     7. Logout':<78}|")
+            print(f"|{'     7. Info Akun':<78}|")
+            print(f"|{'     8. Logout':<78}|")
             print(f"|{' ' * 78}|")
             print("-" * 80)
 
@@ -156,6 +160,8 @@ def menu_utama(data_account):
             elif pilih_menu == '6':
                 print('lihat notif')
             elif pilih_menu == '7':
+                account[0] = info_akun(account[0])
+            elif pilih_menu == '8':
                 print(f"\n{'Terimakasih sudah berkunjung di toko kami 🙏':^78}")
                 return True
             else:

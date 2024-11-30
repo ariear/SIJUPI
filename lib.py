@@ -5,9 +5,6 @@ import random
 from auth import enkripsi_password, verifikasi_password, daftar_huruf
 from auth import role_parse
 from datetime import datetime
-import pytz
-
-time_zone = pytz.timezone("Asia/Jakarta")
 
 def daftar_transaksi(username):
     os.system('cls')
@@ -425,7 +422,7 @@ def notificationMsg(penerima = False, pesan = False):
                 data_baru_list.append({
                     "Username": akun,
                     "Deskripsi": topik,
-                    "Tanggal": datetime.now(time_zone).strftime("%Y-%m-%d"),
+                    "Tanggal": datetime.now().strftime("%d-%m-%Y"),
                     "Terbaca": False
                 })
         

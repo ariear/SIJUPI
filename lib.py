@@ -468,128 +468,224 @@ def notificationMsg(penerima = False, pesan = False):
         data_notif.to_csv("db/notifications.csv", index=False)
     return
 
-def read() :
-    data = pd.read_csv('db/products.csv')
-    data.index = data.index + 1
-    print(data)
-
-def add():
+def tambah_produk():
     if not os.path.exists('db/products.csv'):
         with open('db/products.csv', mode='w', newline='') as file :
             csv_writer = csv.writer(file)
             header = ('Nama Produk', 'Jenis', 'Harga', 'Stock')
             csv_writer.writerow(header)
 
-    Nama = input("Nama Produk\t: ")
-    Jenis = input("Jenis\t: ")
-    Harga = input("Harga\t: ")
-    Stock = int(input("Stock\t: "))
+    print("-" * 80)
+    print(f"|{' ' * 78}|")
+    print(f"|{'TAMBAH PRODUK':^78}|")
+    print(f"|{' ' * 78}|")
+    print("-" * 80)
+
+    Nama, Jenis, Harga, Stock = None, None, None, None
+    while True:
+        if not Nama:
+            Nama = input("Nama Produk\t: ").strip()
+            if not Nama:
+                print(f"\n{'⚠  Nama produk tidak boleh kosong ⚠':^78}\n")
+                continue
+        
+        if not Jenis:
+            Jenis = input("Jenis\t\t: ").strip()
+            if not Jenis:
+                print(f"\n{'⚠  Jenis produk tidak boleh kosong ⚠':^78}\n")
+                continue
+
+        if Harga is None:
+            Harga_input = input("Harga\t\t: ").strip()
+            try:
+                Harga = int(Harga_input)
+                if Harga < 0:
+                    print(f"\n{'⚠  Harga harus berupa angka positif ⚠':^78}\n")
+                    Harga = None
+                    continue
+            except ValueError:
+                print(f"\n{'⚠  Harga harus berupa angka ⚠':^78}\n")
+                continue
+
+        if Stock is None:
+            Stock_input = input("Stock\t\t: ").strip()
+            if Stock_input.isdigit() and int(Stock_input) >= 0:
+                Stock = int(Stock_input)
+            else:
+                print(f"\n{'⚠  Stock harus berupa angka positif ⚠':^78}\n")
+                continue
+
+        if Nama and Jenis and Harga is not None and Stock is not None:
+            break
+    
     with open('db/products.csv', mode='a', newline='') as file:
         csv_writer = csv.writer(file)
 
         csv_writer.writerow((Nama, Jenis, Harga, Stock))
     
-    data = pd.read_csv('db/products.csv')
-    data.index = data.index + 1
-    print("Data berhasil ditambahkan.")
-    print(data)
-
-def update(errorMsg = False):
     os.system('cls')
-    
+    print(f"\n{'Produk berhasil ditambahkan!!':^78}\n")
+
+def update_produk(errorMsg=False):
+    os.system('cls')
+
     if errorMsg:
-        print(errorMsg)
-        
+        print(f"\n{errorMsg:^78}\n")
+
+    daftarBarang()
+
     data = pd.read_csv('db/products.csv')
     data.index = data.index + 1
-    print(data)
-        
-    id_update = int(input("Masukkan ID yang ingin diupdate : ")) - 1
-    if (id_update + 1) in data.index:
-        Nama = input("Nama Produk\t: ")
-        Jenis = input("Jenis\t: ")                
-        Harga = int(input("Harga\t: "))
-        Stock = int(input("Stock\t: "))
-        
-        nama_awal, jenis_awal, harga_awal, stock_awal = data.loc[(id_update + 1), ["Nama Produk", "Jenis", "Harga", "Stock"]]
-        
-        data.iloc[id_update] = [Nama, Jenis, Harga, Stock]
-        data.to_csv('db/products.csv', index=False)
-        
-        wishlistData = pd.read_csv('db/wishlists.csv')
-        filteredWishlist = wishlistData[wishlistData["Nama Produk"] == nama_awal ]
-        
-        if not filteredWishlist.empty:
-            username_list = filteredWishlist["Username"].tolist()
-            pesan = []
-            if Nama != nama_awal:
-                pesan.append(f"{nama_awal} telah diganti namanya menjadi {Nama}")
-                update_wishlist("Nama Produk", nama_awal, Nama)
-            if Jenis != jenis_awal:
-                pesan.append(f"Jenis barang dari {Nama} telah diganti menjadi Rp. {Jenis}")
-            if Harga != harga_awal:
-                pesan.append(f"Harga {Nama} telah diubah menjadi {Harga:,}")
-                update_wishlist("Harga", harga_awal, Harga)
-            if Stock != stock_awal:
-                pesan.append(f"Stock {Nama} sekarang adalah {Stock}")
-            notificationMsg(username_list, pesan)
-            
-        os.system('cls')
-        print("Data telah diupdate!")
-        print(data)
-    else:
-        update(f"Barang dengan ID {id_update + 1} tidak ada!")
+
+    try:
+        id_update = int(input("\nPilih produk untuk diperbarui berdasarkan nomor : "))
+    except ValueError:
+        update_produk("Input harus berupa angka!")
         return
-    return
+
+    if id_update in data.index:
+        os.system('cls')
+        while True:
+            print(f"\n{'Produk terpilih: ' + data.loc[id_update, 'Nama Produk']:^78}")
+            print("\nPilih data yang ingin diperbarui :")
+            print("1. Ubah Nama Produk")
+            print("2. Ubah Jenis")
+            print("3. Ubah Harga")
+            print("4. Ubah Stock")
+            print("5. Batal")
+            try:
+                choice = int(input("\nPilih berdasarkan nomor : "))
+            except ValueError:
+                os.system('cls')
+                print(f"\n{'Input harus berupa angka! Coba lagi':^78}\n")
+                continue
+
+            if choice == 1:
+                Nama = input("Nama Produk Baru: ")
+                if not Nama.strip():
+                    os.system('cls')
+                    print(f"\n{'Nama produk tidak boleh kosong! Coba lagi':^78}\n")
+                    continue
+                data.loc[id_update, "Nama Produk"] = Nama
+
+                os.system('cls')
+                print(f"\n{'Nama produk berhasil diperbarui menjadi ' + Nama:^78}\n")
+            elif choice == 2:
+                Jenis = input("Jenis Baru: ")
+                if not Jenis.strip():
+                    os.system('cls')
+                    print(f"\n{'Jenis produk tidak boleh kosong! Coba lagi':^78}\n")
+                    continue
+                data.loc[id_update, "Jenis"] = Jenis
+
+                os.system('cls')
+                print(f"\n{'Jenis produk berhasil diperbarui menjadi ' + Jenis:^78}\n")
+            elif choice == 3:
+                try:
+                    Harga = input("Harga Baru: ")
+                    if not Harga.strip():
+                        raise ValueError("Harga tidak boleh kosong!")
+                    Harga = int(Harga)
+                    data.loc[id_update, "Harga"] = Harga
+
+                    os.system('cls')
+                    print(f"\n{'Harga produk berhasil diperbarui menjadi ' + str(Harga):^78}\n")
+                except ValueError:
+                    os.system('cls')
+                    print(f"\n{'Harga harus berupa angka! Coba lagi':^78}\n")
+                    continue
+            elif choice == 4:
+                try:
+                    Stock = input("Stock Baru: ")
+                    if not Stock.strip(): 
+                        raise ValueError("Stock tidak boleh kosong!")
+                    Stock = int(Stock)
+                    data.loc[id_update, "Stock"] = Stock
+
+                    os.system('cls')
+                    print(f"\n{'Stock produk berhasil diperbarui menajdi ' + str(Stock):^78}\n")
+                except ValueError:
+                    os.system('cls')
+                    print(f"\n{'Stock harus berupa angka! Coba lagi':^78}\n")
+                    continue
+            elif choice == 5:
+                os.system('cls')
+                return
+            else:
+                os.system('cls')
+                print(f"\n{'Pilih berdasarkan nomor menu!!':^78}\n")
+                continue
+
+            data.to_csv('db/products.csv', index=False)
+            return
+    else:
+        update_produk(f"Produk yang kamu pilih tidak ada!")
+        return
+
     
-def delete():
-    data = pd.read_csv('db/products.csv')
-    data.index = data.index + 1
-    print(data)
+def hapus_produk():
+    while True:
+        daftarBarang()
 
-    id_del = int(input("Masukkan Id yang ingin dihapus: "))
-    answer = ["iya", "tidak"]
-    quest = input("Yakin ingin menghapus produk tersebut? (iya/tidak) : ")
-    if quest in answer : 
-        if quest == "iya" :
-            if id_del in data.index :
+        data = pd.read_csv('db/products.csv')
+        data.index = data.index + 1
+
+        try:
+            id_del = int(input("\nPilih produk yang ingin dihapus berdasarkan No : "))
+        except ValueError:
+            os.system('cls')
+            print(f"\n{'Input harus berupa angka! Coba lagi.':^78}\n")
+            continue
+
+        answer = ["iya", "tidak"]
+        quest = input("Yakin ingin menghapus produk tersebut? (iya/tidak) : ")
+
+        if quest in answer : 
+            if quest == "iya" :
                 if id_del in data.index :
-                    data = data.drop(id_del)
-                    data.to_csv('db/products.csv', index=False)
-                    print("Data berhasil dihapus!")
-                    print(data)
+                    if id_del in data.index :
+                        data = data.drop(id_del)
+                        data.to_csv('db/products.csv', index=False)
+                        
+                        os.system('cls')
+                        print(f"\n{'Produk berhasil dihapus':^78}\n")
+                        break
+                else :
+                    os.system('cls')
+                    print(f"\n{'Produk tidak ada':^78}\n")
             else :
-                print("Masukkan index dengan benar!")
+                os.system('cls')
+                print(f"\n{'Silahkan pilih menu lainnya':^78}\n")
+                break
         else :
-            print("Silahkan pilih menu lainnya")
-    else :
-        print("Masukkan jawaban dengan benar!")
+            os.system('cls')
+            print(f"\n{'Silahkan pilih menu lainnya':^78}\n")
+            break
 
 
-def kelola() :
+def kelola_produk() :
     os.system('cls')
     while True:
-        print("Menu:")
-        print("1. Tambah Data")
-        print("2. Baca Data")
-        print("3. Update Data")
-        print("4. Hapus Data")
-        print("5. Keluar")
-        choice = input("Pilih opsi: ")
+        daftarBarang()
+
+        print("\nMenu:")
+        print("1. Tambah Produk")
+        print("2. Update Produk")
+        print("3. Hapus Produk")
+        print("4. Keluar")
+        choice = input("Pilih menu: ")
         os.system('cls')
 
         if choice == '1':
-            add()
+            tambah_produk()
         elif choice == '2':
-            read()
+            update_produk()
         elif choice == '3':
-            update()
+            hapus_produk()
         elif choice == '4':
-            delete()
-        elif choice == '5':
             break
         else:
-            print("Pilihan tidak valid.")
+            print(f"\n{'⚠  Masukkan nomor yang valid! ⚠':^78}\n")
         
 def notif_sudah_terbaca(username = False):
     os.system('cls')

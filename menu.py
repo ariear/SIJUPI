@@ -1,6 +1,6 @@
 import os
 from auth import login, register, role_parse
-from lib import info_akun, daftarBarang, tambah_wishlist, lihat_wishlist, beli_barang, kelola, daftar_transaksi, notifikasi, konfirmasi_pembelian, kelola_akun
+from lib import info_akun, daftarBarang, tambah_wishlist, lihat_wishlist, beli_barang, kelola_produk, daftar_transaksi, notifikasi, konfirmasi_pembelian, kelola_akun
 
 def menu_awal():
     while True:
@@ -109,7 +109,7 @@ def menu_utama(data_account):
         
             pilih_menu = input("Pilih berdasarkan nomor : ")
             if pilih_menu == '1':
-                kelola()
+                kelola_produk()
             elif pilih_menu == '2':
                 konfirmasi_pembelian()
             elif pilih_menu == '3':
@@ -148,7 +148,7 @@ def menu_utama(data_account):
 
             pilih_menu = input("Pilih berdasarkan nomor : ")
             if pilih_menu == '1':
-                kelola()
+                kelola_produk()
             elif pilih_menu == '2':
                 konfirmasi_pembelian()
             elif pilih_menu == '3':

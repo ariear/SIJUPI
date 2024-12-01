@@ -1026,12 +1026,12 @@ def daftar_akun(menu = False, msg = False, username = False):
         print(garis)
     
     if msg:
-        print(msg)
+        print(f"{msg:^78}")
     
     if menu == "Perbarui":
         akun_diperbarui = input("Silahkan Masukkan Nomor Urut Dari Akun Yang Akan Diperbarui: ")
         
-        if not akun_diperbarui.isdigit():
+        if not akun_diperbarui.isdigit() or int(akun_diperbarui) not in data_akun.index:
             daftar_akun(menu="Perbarui", msg="\nInput Harus Berupa Angka!\n", username=username)
         
         akun_diperbarui = data_akun.iloc[int(akun_diperbarui) - 1]
@@ -1045,7 +1045,7 @@ def daftar_akun(menu = False, msg = False, username = False):
     elif menu == "Hapus":
         akun_dihapus = input("Silahkan Masukkan Nomor Urut Dari Akun Yang Akan Dihapus: ")
         
-        if not akun_dihapus.isdigit():
+        if not akun_dihapus.isdigit() or int(akun_dihapus) not in data_akun.index:
             daftar_akun("Hapus", "\nInput Harus Berupa Angka!\n", username=username)
         
         akun_dihapus = data_akun.iloc[int(akun_dihapus) - 1]
@@ -1061,17 +1061,23 @@ def daftar_akun(menu = False, msg = False, username = False):
             daftar_akun(msg="Akun Batal Dihapus!", username=username)
         
     else:
-        input("Tekan Enter Untuk Kembali...\n")
+        input("Tekan Enter Untuk Kembali...")
         return
 
 def kelola_akun(errorMsg = False, username = False):
     os.system('cls')
     
     if errorMsg:
-        print(errorMsg)
+        print(f"\n{errorMsg:^78}")
     
-    print("Menu Kelola Akun\n1. Tambah Akun\n2. Lihat Daftar Akun\n3. Perbarui Data Akun\n4. Hapus Akun\n5. Kembali")
-    menu_lanjutan = input("Silahkan Pilih Menu Berdasarkan Nomornya (1/2/3/4/5): ")
+    print("-"*80)
+    print(f"|{' ' * 78}|")
+    print(f"|{'Menu Kelola Akun':^78}|")
+    print(f"|{' ' * 78}|")
+    print("-"*80)
+
+    print("Menu :\n1. Tambah Akun\n2. Lihat Daftar Akun\n3. Perbarui Data Akun\n4. Hapus Akun\n5. Kembali")
+    menu_lanjutan = input("Pilih Menu Berdasarkan Nomor (1/2/3/4/5): ")
     
     if menu_lanjutan == "1":
         register(superAdmin=True)
@@ -1086,6 +1092,7 @@ def kelola_akun(errorMsg = False, username = False):
         daftar_akun(menu="Hapus", username=username)
         return kelola_akun(username=username)
     elif menu_lanjutan == "5":
+        os.system('cls')
         return
     else:
         return kelola_akun("Input Harus Berupa Nomor Sesuai Nomor Urut Menu!\n", username=username)

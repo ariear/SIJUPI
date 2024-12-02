@@ -5,21 +5,6 @@ import random
 def accountData():
     return pd.read_csv('db/accounts.csv')
 
-def addAccount(username = None, password = None, role = None):
-    password = enkripsi_password(password)
-    
-    if role is None:
-        role = 2
-    
-    new_account = pd.DataFrame({
-        'Username': [username],
-        'Password': [password],
-        'Role': [role]
-    })
-    new_account.to_csv('db/accounts.csv', mode='a', header=False, index=False)
-    
-    return [username, role]
-
 def login(errorMsg = False):
     os.system('cls')
     
@@ -49,7 +34,23 @@ def login(errorMsg = False):
         break
     
     return [account.iloc[0]["Username"], account.iloc[0]["Role"]]
+
+
+def addAccount(username = None, password = None, role = None):
+    password = enkripsi_password(password)
     
+    if role is None:
+        role = 2
+    
+    new_account = pd.DataFrame({
+        'Username': [username],
+        'Password': [password],
+        'Role': [role]
+    })
+    new_account.to_csv('db/accounts.csv', mode='a', header=False, index=False)
+    
+    return [username, role]
+
 def register(errorMsg = False, superAdmin = False):
     os.system('cls')
     
@@ -106,6 +107,7 @@ def register(errorMsg = False, superAdmin = False):
         return addAccount(username, password, role)
 
 
+# Kode untuk mengenkripsi dan memverifikasi password
 daftar_huruf = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
 def enkripsi_password(password):
@@ -130,6 +132,7 @@ def verifikasi_password(password_enkripsi, password):
     
     return True if hasil_dekripsi == password else False
 
+# Kode fungsi untuk mengubah role ke teks
 def role_parse(role):
     if role == 0:
         return 'Pemilik Toko'

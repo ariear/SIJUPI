@@ -1098,5 +1098,66 @@ def kelola_akun(errorMsg = False, username = False):
         return kelola_akun("Input Harus Berupa Nomor Sesuai Nomor Urut Menu!\n", username=username)
     
     
-    
-    
+def update_info_toko():
+    os.system('cls')
+    data_toko = pd.read_csv('db/toko.csv')
+    data_toko = data_toko.iloc[0]
+    while True:
+        print("-"*74)
+        print(f"|{' ' * 72}|")
+        print(f"|{'Perbarui Informasi Toko':^72}|")
+        print(f"|{' ' * 72}|")
+        print("-"*74)
+
+        print(f"|    {'Nama Toko      : ' + data_toko['Nama Toko']:<68}|")
+        print(f"|    {'Nomor Rekening : ' + str(data_toko['No Rek']):<68}|")
+        print(f"|    {'Nomor whatsapp : ' + str(data_toko['No Wa']):<68}|")
+        print("-"*74)
+
+        print("\nMenu :")
+        print("1. Perbarui nama toko")
+        print("2. Perbarui nomor rekening toko")
+        print("3. Perbarui nomor whatsapp")
+        print("4. Kembali")
+
+        pilih_menu = input("\nPiih menu berdasarkan nomor : ")
+
+        if pilih_menu == "1":
+            nama_baru = input("Masukkan nama toko baru: ").strip()
+            if nama_baru:
+                data_toko['Nama Toko'] = nama_baru
+                break
+            else:
+                os.system('cls')
+                print(f"\n{'⚠  Nama toko tidak boleh kosong. Silakan masukkan kembali. ⚠':^78}\n")
+                continue
+
+        elif pilih_menu == "2":
+            rekening_baru = input("Masukkan nomor rekening baru: ").strip()
+            if rekening_baru:
+                data_toko['No Rek'] = rekening_baru
+                break
+            else:
+                os.system('cls')
+                print(f"\n{'⚠  Nomor rekening tidak boleh kosong. Silakan masukkan kembali. ⚠':^78}\n")
+                continue
+
+        elif pilih_menu == "3":
+            wa_baru = input("Masukkan nomor WhatsApp baru: ").strip()
+            if wa_baru:
+                data_toko['No Wa'] = wa_baru
+                break
+            else:
+                os.system('cls')
+                print(f"\n{'⚠  Nomor WhatsApp tidak boleh kosong. Silakan masukkan kembali. ⚠':^78}\n")
+                continue
+        elif pilih_menu == "4":
+            os.system('cls')
+            return
+        else:
+            os.system('cls')
+            print(f"\n{'⚠  Input harus ada di menu dan berupa angka! ⚠':^78}\n")
+            continue
+
+    data_toko.to_frame().T.to_csv('db/toko.csv', index=False)
+    update_info_toko()

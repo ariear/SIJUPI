@@ -113,6 +113,127 @@ def tambah_produk():
     os.system('cls')
     print(f"\n{'Produk berhasil ditambahkan!!':^78}\n")
 
+# Fungsi-fungsi untuk fitur notifikasi (akses : Pembeli)
+def notificationMsg(penerima = False, pesan = False):
+    if penerima and pesan:
+        data_notif = pd.read_csv('db/notifications.csv')
+        
+        data_baru_list = []
+        for topik in pesan:
+            for akun in penerima:
+                data_baru_list.append({
+                    "Username": akun,
+                    "Deskripsi": topik,
+                    "Tanggal": datetime.now().strftime("%d-%m-%Y"),
+                    "Terbaca": False
+                })
+        
+        data_baru = pd.DataFrame(data_baru_list)
+        
+        data_notif = pd.concat([data_notif, data_baru], ignore_index=True)
+        
+        data_notif.to_csv("db/notifications.csv", index=False)
+    return
+
+def cek_notif_transaksi_admin(username):
+    data_transaksi = pd.read_csv('db/transactions.csv')
+    transaksi_belum_konfirmasi = len(data_transaksi[data_transaksi["Konfirmasi"].isnull()])
+    notificationMsg([username], [f"Ada {transaksi_belum_konfirmasi} transaksi yang sedang menunggu konfirmasi!"])
+    return
+
+def notif_sudah_terbaca(username = False):
+    os.system('cls')
+    print("-"*80)
+    print(f"|{' ' * 78}|")
+    print(f"|{'NOTIFIKASI SUDAH TERBACA':^78}|")
+    print(f"|{' ' * 78}|")
+    print("-"*80)
+
+    notif = pd.read_csv("db/notifications.csv")
+    notif = notif[(notif["Username"] == username) & (notif["Terbaca"] == True)]
+    notif = notif[["Deskripsi", "Tanggal"]]
+    notifikasi = notif.values.tolist()
+
+    print("\n{:^20}  {:} \n".format("Tanggal", "Deskripsi"))
+    for item in notifikasi:
+        print(f"{item[1]:^20}{item[0]}\n")
+    input("Tekan Enter Untuk Kembali...")
+    return
+
+def notif_belum_terbaca(username=False):
+    os.system('cls')
+    print("-" * 80)
+    print(f"|{' ' * 78}|")
+    print(f"|{'NOTIFIKASI BELUM TERBACA':^78}|")
+    print(f"|{' ' * 78}|")
+    print("-" * 80)
+
+    all_notif = pd.read_csv("db/notifications.csv")
+    
+    user_notif = all_notif[(all_notif["Username"] == username) & (all_notif["Terbaca"] == False)]
+    
+    if not user_notif.empty:
+        tampilkan_notif = user_notif[["Deskripsi", "Tanggal"]]
+        notifikasi = tampilkan_notif.values.tolist()
+
+        print("\n{:^20}  {:} \n".format("Tanggal", "Deskripsi"))
+        for item in notifikasi:
+            print(f"{item[1]:^20}{item[0]}\n")
+        
+        all_notif.loc[(all_notif["Username"] == username) & (all_notif["Terbaca"] == False), "Terbaca"] = True
+        
+        all_notif.to_csv('db/notifications.csv', index=False)
+    else:
+        print(f"\n{'Tidak ada notifikasi untuk saat ini':^78}\n")
+
+    input("Tekan Enter Untuk Kembali...")
+    return
+
+def notifikasi(username = False, errorMsg = False):
+    data_notifikasi = pd.read_csv("db/notifications.csv")
+    data_notifikasi = data_notifikasi[data_notifikasi["Username"] == username]
+    count_unread = f"({len(data_notifikasi[data_notifikasi['Terbaca'] == False])})" if len(data_notifikasi[data_notifikasi['Terbaca'] == False]) > 0 else ""
+        
+    os.system('cls')
+    
+    if errorMsg:
+        print(f"\n{errorMsg:^78}\n")
+    
+    print("-"*80)
+    print(f"|{' ' * 78}|")
+    print(f"|{'NOTIFIKASI':^78}|")
+    print(f"|{' ' * 78}|")
+    print("-"*80)
+
+    print(f"|{'     Daftar menu :':<78}|")
+    print(f"|{'     1. Notifikasi Belum Terbaca ' + count_unread:<78}|")
+    print(f"|{'     2. Notifikasi Sudah Terbaca ':<78}|")
+    print(f"|{'     3. Kembali':<78}|")
+    print(f"|{' ' * 78}|")
+    print("-" * 80)
+    
+    menu = input("Silahkan Pilih Menu Notifikasi (1/2/3): ")
+    
+    if menu == "1":
+        notif_belum_terbaca(username)
+        notifikasi(username)
+    elif menu == "2":
+        notif_sudah_terbaca(username)
+        notifikasi(username)
+    elif menu == "3":
+        os.system('cls')
+        return
+    else:
+        notifikasi(username, "Input haru ada di menu dan berupa angka!")
+
+def update_wishlist(column = False, before = False, after = False):
+    data_wishlist = pd.read_csv('db/wishlists.csv')
+    if column == "Harga":
+        data_wishlist.loc[data_wishlist["Nama Produk"] == before, "Harga"] = after
+    else:
+        data_wishlist.loc[data_wishlist[column] == before, column] = after
+    data_wishlist.to_csv('db/wishlists.csv', index=False)
+
 def update_produk(errorMsg=False):
     os.system('cls')
 
@@ -122,6 +243,7 @@ def update_produk(errorMsg=False):
     daftarBarang()
 
     data = pd.read_csv('db/products.csv')
+    data_wishlist = pd.read_csv('db/wishlists.csv')
     data.index = data.index + 1
 
     try:
@@ -147,12 +269,15 @@ def update_produk(errorMsg=False):
                 print(f"\n{'Input harus berupa angka! Coba lagi':^78}\n")
                 continue
 
+            data_lama = data.loc[id_update]
             if choice == 1:
                 Nama = input("Nama Produk Baru: ")
                 if not Nama.strip():
                     os.system('cls')
                     print(f"\n{'Nama produk tidak boleh kosong! Coba lagi':^78}\n")
                     continue
+                update_wishlist("Nama Produk", data_lama["Nama Produk"], Nama)
+                pesanNotif = f"Produk {data_lama['Nama Produk']} telah diganti namanya menjadi {Nama}"
                 data.loc[id_update, "Nama Produk"] = Nama
 
                 os.system('cls')
@@ -163,6 +288,7 @@ def update_produk(errorMsg=False):
                     os.system('cls')
                     print(f"\n{'Jenis produk tidak boleh kosong! Coba lagi':^78}\n")
                     continue
+                pesanNotif = f"Produk {data_lama['Nama Produk']} telah diganti jenisnya menjadi {Jenis}"
                 data.loc[id_update, "Jenis"] = Jenis
 
                 os.system('cls')
@@ -173,6 +299,8 @@ def update_produk(errorMsg=False):
                     if not Harga.strip():
                         raise ValueError("Harga tidak boleh kosong!")
                     Harga = int(Harga)
+                    update_wishlist("Harga", data.loc[id_update, "Nama Produk"], Harga)
+                    pesanNotif = f"Produk {data_lama['Nama Produk']} harganya berubah menjadi {Harga}"
                     data.loc[id_update, "Harga"] = Harga
 
                     os.system('cls')
@@ -187,6 +315,7 @@ def update_produk(errorMsg=False):
                     if not Stock.strip(): 
                         raise ValueError("Stock tidak boleh kosong!")
                     Stock = int(Stock)
+                    pesanNotif = f"Produk {data_lama['Nama Produk']} stocknya berubah menjadi {Stock}"
                     data.loc[id_update, "Stock"] = Stock
 
                     os.system('cls')
@@ -203,6 +332,8 @@ def update_produk(errorMsg=False):
                 print(f"\n{'Pilih berdasarkan nomor menu!!':^78}\n")
                 continue
 
+            data_username_wishlist = data_wishlist.loc[data_wishlist["Nama Produk"] == data_lama["Nama Produk"], "Username"].tolist()
+            notificationMsg(data_username_wishlist, [pesanNotif])
             data.to_csv('db/products.csv', index=False)
             return
     else:
@@ -745,8 +876,6 @@ def info_akun(username):
                 print(f"\n{'⚠  Input harus ada di menu dan berupa angka! ⚠':^78}\n")
                 continue
 
-
-
 # Fungsi untuk membeli produk (akses : pembeli)
 def beli_barang(username):
     os.system('cls')
@@ -772,11 +901,19 @@ def beli_barang(username):
                             qty = int(input(f"Berapa banyak {nama_produk} yang ingin dibeli?: "))
                             if qty > 0:
                                 if qty <= stock:
+                                    sisa = stock - qty
                                     barang_fix.append(nama_produk)
                                     quantitas.append(qty)
                                     daftar_harga.append(harga)
 
-                                    df.loc[pilihan-1, 'Stock'] = stock - qty
+                                    df.loc[pilihan-1, 'Stock'] = sisa
+                                    if (sisa) <= 3:
+                                        data_akun = pd.read_csv('db/accounts.csv')
+                                        data_akun_admin = data_akun.loc[data_akun["Role"] == 1, "Username"].to_list()
+                                        data_akun_pemilik = data_akun.loc[data_akun["Role"] == 0, "Username"].to_list()
+                                        
+                                        penerima = data_akun_pemilik + data_akun_admin
+                                        notificationMsg(penerima, [f"Stock dari {nama_produk} sudah mau habis! tersisa: {sisa} stock!"])
 
                                     print(f"\n{str(qty) + ' ' + nama_produk + ' berhasil ditambahkan ke daftar pembelian.':^78}")
                                     break
@@ -1067,121 +1204,3 @@ def lihat_wishlist(username):
         else:
             os.system('cls')
             print(f"\n{'Input haru ada di menu dan berupa angka!':^78}\n")
-
-
-
-# Fungsi-fungsi untuk fitur notifikasi (akses : Pembeli)
-def notificationMsg(penerima = False, pesan = False):
-    if penerima and pesan:
-        data_notif = pd.read_csv('db/notifications.csv')
-        
-        data_baru_list = []
-        for topik in pesan:
-            for akun in penerima:
-                data_baru_list.append({
-                    "Username": akun,
-                    "Deskripsi": topik,
-                    "Tanggal": datetime.now().strftime("%d-%m-%Y"),
-                    "Terbaca": False
-                })
-        
-        data_baru = pd.DataFrame(data_baru_list)
-        
-        data_notif = pd.concat([data_notif, data_baru], ignore_index=True)
-        
-        data_notif.to_csv("db/notifications.csv", index=False)
-    return
-
-        
-def notif_sudah_terbaca(username = False):
-    os.system('cls')
-    print("-"*80)
-    print(f"|{' ' * 78}|")
-    print(f"|{'NOTIFIKASI SUDAH TERBACA':^78}|")
-    print(f"|{' ' * 78}|")
-    print("-"*80)
-
-    notif = pd.read_csv("db/notifications.csv")
-    notif = notif[(notif["Username"] == username) & (notif["Terbaca"] == True)]
-    notif = notif[["Deskripsi", "Tanggal"]]
-    notifikasi = notif.values.tolist()
-
-    print("\n{:^20}  {:} \n".format("Tanggal", "Deskripsi"))
-    for item in notifikasi:
-        print(f"{item[1]:^20}{item[0]}\n")
-    input("Tekan Enter Untuk Kembali...")
-    return
-
-def notif_belum_terbaca(username=False):
-    os.system('cls')
-    print("-" * 80)
-    print(f"|{' ' * 78}|")
-    print(f"|{'NOTIFIKASI BELUM TERBACA':^78}|")
-    print(f"|{' ' * 78}|")
-    print("-" * 80)
-
-    all_notif = pd.read_csv("db/notifications.csv")
-    
-    user_notif = all_notif[(all_notif["Username"] == username) & (all_notif["Terbaca"] == False)]
-    
-    if not user_notif.empty:
-        tampilkan_notif = user_notif[["Deskripsi", "Tanggal"]]
-        notifikasi = tampilkan_notif.values.tolist()
-
-        print("\n{:^20}  {:} \n".format("Tanggal", "Deskripsi"))
-        for item in notifikasi:
-            print(f"{item[1]:^20}{item[0]}\n")
-        
-        all_notif.loc[(all_notif["Username"] == username) & (all_notif["Terbaca"] == False), "Terbaca"] = True
-        
-        all_notif.to_csv('db/notifications.csv', index=False)
-    else:
-        print(f"\n{'Tidak ada notifikasi untuk saat ini':^78}\n")
-
-    input("Tekan Enter Untuk Kembali...")
-    return
-
-def notifikasi(username = False, errorMsg = False):
-    data_notifikasi = pd.read_csv("db/notifications.csv")
-    data_notifikasi = data_notifikasi[data_notifikasi["Username"] == username]
-    count_unread = f"({len(data_notifikasi[data_notifikasi['Terbaca'] == False])})" if len(data_notifikasi[data_notifikasi['Terbaca'] == False]) > 0 else ""
-        
-    os.system('cls')
-    
-    if errorMsg:
-        print(f"\n{errorMsg:^78}\n")
-    
-    print("-"*80)
-    print(f"|{' ' * 78}|")
-    print(f"|{'NOTIFIKASI':^78}|")
-    print(f"|{' ' * 78}|")
-    print("-"*80)
-
-    print(f"|{'     Daftar menu :':<78}|")
-    print(f"|{'     1. Notifikasi Belum Terbaca ' + count_unread:<78}|")
-    print(f"|{'     2. Notifikasi Sudah Terbaca ':<78}|")
-    print(f"|{'     3. Kembali':<78}|")
-    print(f"|{' ' * 78}|")
-    print("-" * 80)
-    
-    menu = input("Silahkan Pilih Menu Notifikasi (1/2/3): ")
-    
-    if menu == "1":
-        notif_belum_terbaca(username)
-        notifikasi(username)
-    elif menu == "2":
-        notif_sudah_terbaca(username)
-        notifikasi(username)
-    elif menu == "3":
-        os.system('cls')
-        return
-    else:
-        notifikasi(username, "Input haru ada di menu dan berupa angka!")
-
-            
-
-def update_wishlist(column = False, before = False, after = False):
-    data_wishlist = pd.read_csv('db/wishlists.csv')
-    data_wishlist.loc[data_wishlist[column] == before, column] = after
-
-    data_wishlist.to_csv('db/wishlists.csv', index=False)

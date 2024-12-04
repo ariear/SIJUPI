@@ -727,7 +727,68 @@ def hapus_pengeluaran() :
             break
 
 #Fungsi untuk menampilkan laporan
+def laporan() :
+    os.system('cls')
+    while True:
 
+        print("Menu:")
+        print("1. Laporan Penjualan")
+        print("2. Laporan Pengeluaran")
+        print("3. Keluar")
+        choice = input("Pilih opsi: ")
+        os.system('cls')
+
+        if choice == '1':
+            lap_penjualan()
+        elif choice == '2':
+            print("yes")
+        elif choice == '3':
+            break
+        else:
+            print(f"\n{'⚠  Masukkan nomor yang valid! ⚠':^78}\n")
+            
+def lap_penjualan():
+    awal = input("Masukkan tanggal awal (DD-MM-YYYY)\t: ")
+    akhir = input("Masukkan tanggal akhir (DD-MM-YYYY)\t: ")
+    
+    try:
+        tanggal_awal = datetime.strptime(awal, "%d-%m-%Y").date()
+        tanggal_akhir = datetime.strptime(akhir, "%d-%m-%Y").date()
+        if tanggal_awal > tanggal_akhir:
+            os.system('cls')
+            print("⚠ Tanggal awal tidak boleh lebih besar dari tanggal akhir! ⚠")
+            return
+
+        data = pd.read_csv('db/transactions.csv')
+        data['Tanggal Pembuatan'] = pd.to_datetime(data['Tanggal Pembuatan'], format='%d-%m-%Y', errors='coerce')
+        laporan = data[(data['Tanggal Pembuatan'].dt.date >= tanggal_awal) & 
+                       (data['Tanggal Pembuatan'].dt.date <= tanggal_akhir)]
+        
+        if laporan.empty:
+            os.system('cls')
+            print(f"⚠ Tidak ada transaksi antara tanggal {tanggal_awal} dan {tanggal_akhir} ⚠")
+            return
+
+        print("=" * 78)
+        print(f"{'Laporan Penjualan':^78}")
+        print("=" * 78)
+        print(f"Rentang Tanggal: {tanggal_awal} hingga {tanggal_akhir}")
+        print("-" * 78)
+        print(f"{'Transaksi ID':<15} {'Username':<15} {'Nama Produk':<30} {'Harga':<10} {'Quantitas':<10} {'Tipe Pembayaran':<15}")
+        print("-" * 78)
+
+        total = 0
+        for index, row in laporan.iterrows():
+            hasil = row['Harga'] * row['Quantitas']
+            total += hasil
+            print(f"{row['Transaksi id']:<15} {row['Username']:<15} {row['Nama Produk']:<30} {row['Harga']:<10} {row['Quantitas']:<10} {row['Tipe Pembayaran']:<15}")
+
+        print("-" * 78)
+        print(f"{'Total Harga':>65}: {total}")
+        print("=" * 78)
+    except ValueError:
+        print("⚠ Format tanggal tidak valid. Harap masukkan dalam format DD-MM-YYYY! ⚠")
+        os.system('cls')
 
 # Fungsi untuk mengelola akun (akses : Pemilik toko)
 def kelola_akun(errorMsg = False, username = False):

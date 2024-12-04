@@ -6,6 +6,17 @@ from auth import enkripsi_password, verifikasi_password, daftar_huruf, register
 from auth import role_parse
 from datetime import datetime
 
+# Fungsi untuk memformat sebuah angka menjadi bentuk rupiah
+def format_rupiah(angka):
+    return "Rp {:,}".format(angka).replace(",", ".")
+
+# Fungsi untuk membaca informasi seputar toko
+def baca_info_toko():
+    toko = pd.read_csv('db/toko.csv')
+    toko = toko.iloc[0]
+
+    return toko
+
 # Fungsi untuk menampilkan data produk
 def daftarBarang():
     daftar_produk = pd.read_csv('db/products.csv')
@@ -26,7 +37,7 @@ def daftarBarang():
     print(garis)
 
     for id, row in daftar_produk.iterrows():
-        print("| {:^5} | {:<29} | {:>10} | {:>15} | {:>5} |".format(id, row['Nama Produk'], row['Jenis'], row['Harga'], row['Stock']))
+        print("| {:^5} | {:<29} | {:>10} | {:>15} | {:>5} |".format(id, row['Nama Produk'], row['Jenis'], format_rupiah(row['Harga']), row['Stock']))
         print(garis)
 
 
@@ -431,7 +442,7 @@ def konfirmasi_pembelian():
             daftar_transaksi.append(transaksi_id)
             tanggal = group['Tanggal Pembuatan'].iloc[0]
 
-            print(f"| {i:<5} {transaksi_id:<15} {group['Username'].iloc[0]:<20} {tanggal:<15} {total_harga:<17} |")
+            print(f"| {i:<5} {transaksi_id:<15} {group['Username'].iloc[0]:<20} {tanggal:<15} {format_rupiah(total_harga):<17} |")
         print("-" * 80)
 
         print("\nMenu:")
@@ -469,7 +480,7 @@ def daftar_pengeluaran():
     pengeluaran = pd.read_csv('db/pengeluaran.csv')
     pengeluaran.index = pengeluaran.index + 1
 
-    header = "| {:^5} | {:<29} | {:>10} | {:>15} | {:>5} | {:>22} |".format('No', 'Nama Barang', 'Jumlah', 'Harga', 'Total', 'Tanggal')
+    header = "| {:^5} | {:<22} | {:>10} | {:>15} | {:>10} | {:>22} |".format('No', 'Nama Barang', 'Jumlah', 'Harga', 'Total', 'Tanggal')
     garis = "-"* 105
 
 
@@ -484,7 +495,7 @@ def daftar_pengeluaran():
     print(garis)
 
     for id, row in pengeluaran.iterrows():
-        print("| {:^5} | {:<29} | {:>10} | {:>15} | {:>5} | {:>22} |".format(id, row['Nama Barang'], row['Jumlah'], row['Harga'], row['Total'], row['Tanggal']))
+        print("| {:^5} | {:<22} | {:>10} | {:>15} | {:>10} | {:>22} |".format(id, row['Nama Barang'], row['Jumlah'], format_rupiah(row['Harga']), format_rupiah(row['Total']), row['Tanggal']))
         print(garis)
         
 def kelola_pengeluaran() :
@@ -793,10 +804,10 @@ def lap_penjualan():
         for index, row in laporan.iterrows():
             hasil = row['Harga'] * row['Quantitas']
             total += hasil
-            print(f"{row['Transaksi id']:<15} {row['Username']:<15} {row['Nama Produk']:<30} {row['Harga']:<10} {row['Quantitas']:<10} {hasil:<12} {row['Tipe Pembayaran']:<15}")
+            print(f"{row['Transaksi id']:<15} {row['Username']:<15} {row['Nama Produk']:<30} {format_rupiah(row['Harga']):<10} {row['Quantitas']:<10} {format_rupiah(hasil):<12} {row['Tipe Pembayaran']:<15}")
 
         print("-" * 115)
-        print(f"{'Total Harga':>75}: {total}")
+        print(f"{'Total Harga':>75}: {format_rupiah(total)}")
         print("=" * 115)
 
         input("Tekan enter untuk kembali....")
@@ -845,9 +856,9 @@ def lap_pengeluaran():
         for index, row in laporan.iterrows():
             hasil = row['Harga'] * row['Jumlah']
             total_akhir += hasil
-            print(f"{row['Nama Barang']:<30} {row['Jumlah']:<10} {row['Harga']:<10} {row['Total']:<15} {row['Tanggal']}")
+            print(f"{row['Nama Barang']:<30} {row['Jumlah']:<10} {format_rupiah(row['Harga']):<10} {format_rupiah(row['Total']):<15} {row['Tanggal']}")
         print("-" * 90)
-        print(f"{'Total Harga':>65}: {total_akhir}")
+        print(f"{'Total Harga':>65}: {format_rupiah(total_akhir)}")
         print("=" * 90)
 
         input("Tekan enter untuk kembali....")
@@ -1338,8 +1349,10 @@ def beli_barang(username):
                             print("\nInput harus berupa angka!")
                 else:
                     print("\nNomor produk tidak ada!!")
+                    continue
             except ValueError:
                 print("\nInput harus berupa angka!")
+                continue
             
             while True:
                 print("\nIngin membeli barang lagi?\n1. Ya\n2. Tidak")
@@ -1411,16 +1424,18 @@ def beli_barang(username):
         print("-" * 78)
         for nama, harga, qty in zip(barang_fix, daftar_harga, quantitas):
             subtotal = harga * qty
-            print(f"{nama:<30} {harga:<15} {qty:<10} {subtotal:<15}")
+            print(f"{nama:<30} {format_rupiah(harga):<15} {qty:<10} {format_rupiah(subtotal):<15}")
         print("-" * 78)
-        print(f"{'Total Harga':>65}: {total_harga}")
+        print(f"{'Total Harga':>65}: {format_rupiah(total_harga)}")
         print("=" * 78)
 
         if bayar == "Transfer":
-            print("\nSilahkan transfer ke rekening berikut untuk menyelesaikan transaksi:")
-            print("Bank ABC, No. Rekening: 1234567890, a.n. Toko SIJUPI\n")
+            toko = baca_info_toko()
 
-            print("\nKonfirmasi pembayaran melalui nomor berikut : 0888382382382 \n")
+            print("\nSilahkan transfer ke rekening berikut untuk menyelesaikan transaksi:")
+            print(f"Bank BRI, No. Rekening: {toko['No Rek']}, a.n. {toko['Nama Toko']}\n")
+
+            print(f"\nKonfirmasi pembayaran melalui nomor berikut : {toko['No Wa']}\n")
             print("=" * 78)
         
         return input('Tekan enter untuk keluar.....')
@@ -1502,7 +1517,7 @@ def daftar_transaksi(username):
             daftar_transaksi.append(transaksi_id)
             tanggal = group['Tanggal Pembuatan'].iloc[0]
 
-            print(f"| {i:<5} {transaksi_id:<15} {tanggal:<15} {total_harga:<18} {status:<20}|")
+            print(f"| {i:<5} {transaksi_id:<15} {tanggal:<15} {format_rupiah(total_harga):<18} {status:<20}|")
         
         print("-" * 80)
         
@@ -1532,9 +1547,9 @@ def daftar_transaksi(username):
                     for _, row in transaksi_detail.iterrows():
                         subtotal = row['Harga'] * row['Quantitas']
                         total_harga += subtotal
-                        print(f"{row['Nama Produk']:<30} {row['Harga']:<15} {row['Quantitas']:<10} {subtotal:<15}")
+                        print(f"{row['Nama Produk']:<30} {format_rupiah(row['Harga']):<15} {row['Quantitas']:<10} {format_rupiah(subtotal):<15}")
                     print("-" * 78)
-                    print(f"{'Total Harga':>65}: {total_harga}")
+                    print(f"{'Total Harga':>65}: {format_rupiah(total_harga)}")
                     print("=" * 78)
                     print("\n")
                     input("Tekan enter untuk keluar....")
@@ -1579,7 +1594,7 @@ def lihat_wishlist(username):
             print(header)
             print(garis)
             for id, row in user_wishlists.iterrows():
-                print("| {:^5} | {:<28} | {:>37} |".format(id, row['Nama Produk'], row['Harga']))
+                print("| {:^5} | {:<28} | {:>37} |".format(id, row['Nama Produk'], format_rupiah(row['Harga'])))
                 print(garis)
 
         print("\nMenu:")

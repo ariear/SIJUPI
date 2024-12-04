@@ -1,12 +1,14 @@
 import os
 from auth import login, register, role_parse
-from lib import info_akun, daftarBarang, tambah_wishlist, lihat_wishlist, beli_barang, kelola_produk, daftar_transaksi, notifikasi, konfirmasi_pembelian, kelola_pengeluaran, laporan, kelola_akun, update_info_toko, cek_notif_transaksi_admin
+from lib import info_akun, daftarBarang, baca_info_toko, tambah_wishlist, lihat_wishlist, beli_barang, kelola_produk, daftar_transaksi, notifikasi, konfirmasi_pembelian, kelola_pengeluaran, laporan, kelola_akun, update_info_toko, cek_notif_transaksi_admin
 
 def menu_awal():
+    toko = baca_info_toko()
+
     while True:
         print("-"*80)
         print(f"|{' '*78}|")
-        print(f"|{'SELAMAT DATANG DI TOKO PUPUK DAN ALAT TANI (SIJUPI)':^78}|")
+        print(f"|{'SELAMAT DATANG DI TOKO ' + toko['Nama Toko']:^78}|")
         print(f"|{' '*78}|")
         print("-"*80)
 
@@ -82,10 +84,11 @@ def menu_utama(data_account):
 
     account = data_account
 
+    toko = baca_info_toko()
     while True:
         print("-"*80)
         print(f"|{' ' * 78}|")
-        print(f"|{'MENU TOKO SIJUPI':^78}|")
+        print(f"|{'MENU TOKO ' + toko['Nama Toko']:^78}|")
         print(f"|{' ' * 78}|")
         print(f"|{'Selamat datang ' + account[0] + '✨':^77}|")
         print(f"|{' ' * 78}|")

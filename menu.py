@@ -117,7 +117,7 @@ def menu_utama(data_account):
             elif pilih_menu == '4':
                 kelola_pengeluaran()
             elif pilih_menu == '5':
-                print('laporan penjualan dan pengeluaran')
+                laporan()
             elif pilih_menu == '6':
                 cek_notif_transaksi_admin(account[0])
                 notifikasi(account[0])

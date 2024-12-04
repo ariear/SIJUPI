@@ -28,7 +28,9 @@ def login(errorMsg = False):
         if account.empty:
             return login("Maaf Username Atau Password Yang Anda Berikan Salah!")
         
-        if not verifikasi_password(account.iloc[0]["Password"], password):
+        if account["Password"].isnull().any():
+            register(resetPassword=username)
+        elif not verifikasi_password(account.iloc[0]["Password"], password):
             return login("Maaf Username Atau Password Yang Anda Berikan Salah!")
         
         break
@@ -36,8 +38,15 @@ def login(errorMsg = False):
     return [account.iloc[0]["Username"], account.iloc[0]["Role"]]
 
 
-def addAccount(username = None, password = None, role = None):
+def addAccount(username = None, password = None, role = None, resetPassword = False):
     password = enkripsi_password(password)
+    
+    if resetPassword:
+        data_akun = pd.read_csv('db/accounts.csv')
+        data_akun.loc[data_akun["Username"] == resetPassword, "Password"] = password
+        
+        data_akun.to_csv('db/accounts.csv')
+        return
     
     if role is None:
         role = 2
@@ -51,7 +60,25 @@ def addAccount(username = None, password = None, role = None):
     
     return [username, role]
 
-def register(errorMsg = False, superAdmin = False):
+def register(errorMsg = False, superAdmin = False, resetPassword = False):
+    if resetPassword:
+        if errorMsg:
+            print(f"\n{' ' * 10} {errorMsg} ❌\n")
+        
+        print("Password anda telah di reset oleh pemilik toko, silahkan masukkan password baru!")
+        password = input("🔑 Masukkan Password Baru (minimal 8 character!): ").strip()
+        confirmedPassword = input("🔐 Konfirmasi Ulang Password: ").strip()
+        
+        if not password:
+            return register(errorMsg="Password tidak boleh hanya berupa spasi!", resetPassword=resetPassword)
+        
+        if len(password) < 8:
+            return register(errorMsg="Password Akun Minimal 8 character!", resetPassword=resetPassword)
+        
+        if password != confirmedPassword:
+            return register(errorMsg="Konfirmasi Ulang Password Berbeda Dengan Password Awal!", resetPassword=resetPassword)
+        return addAccount(password=password, resetPassword=resetPassword)
+    
     os.system('cls')
     
     if errorMsg:

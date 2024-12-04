@@ -475,6 +475,136 @@ def konfirmasi_pembelian():
             print(f"\n{'⚠  Input harus ada di menu dan berupa angka! ⚠':^78}\n")
 
 
+# Fungsi untuk mengelola pembelian
+def kelola_pembelian():
+    os.system('cls')
+    while True:
+        transaksi_df = pd.read_csv('db/transactions.csv')
+
+        if transaksi_df.empty:
+            print("=" * 78)
+            print(f"{'Tidak ada pembelian':^78}")
+            print("=" * 78)
+            input("\nTekan enter untuk kembali...")
+            return
+
+        print("-"*94)
+        print(f"|{' ' * 92}|")
+        print(f"|{'Daftar Pembelian':^92}|")
+        print(f"|{' ' * 92}|")
+        print("-"*94)
+
+        print(f"| {'No':<5} {'Transaksi ID':<15} {'Nama Pembeli':<20} {'Tanggal':<15} {'Total Harga':<17} {'Status':<13} |")
+        print("-" * 94)
+
+        grouped_transaksi = transaksi_df.groupby("Transaksi id")
+        daftar_transaksi = []
+        for i, (transaksi_id, group) in enumerate(grouped_transaksi, start=1):
+            total_harga = (group['Harga'] * group['Quantitas']).sum()
+            daftar_transaksi.append(transaksi_id)
+            tanggal = group['Tanggal Pembuatan'].iloc[0]
+            status = "Lunas" if group['Lunas'].iloc[0] == True else "Belum Lunas"
+
+            print(f"| {i:<5} {transaksi_id:<15} {group['Username'].iloc[0]:<20} {tanggal:<15} {format_rupiah(total_harga):<17} {status:<13} |")
+        print("-" * 94)
+
+        print("\nMenu:")
+        print("1. Lihat detail pembelian")
+        print("2. Ubah status pembelian")
+        print("3. Hapus pembelian")
+        print("4. Keluar")
+
+        pilihan = input("Pilih menu: ")
+        if pilihan == '1':
+            try:
+                transaksi_pilihan = int(input("Pilih transaksi berdasarkan nomor : "))
+                if 1 <= transaksi_pilihan <= len(daftar_transaksi):
+                    transaksi_id = daftar_transaksi[transaksi_pilihan - 1]
+                    transaksi_detail = transaksi_df[transaksi_df['Transaksi id'] == transaksi_id]
+                    
+                    os.system('cls')
+                    print("=" * 78)
+                    print(f"\n{'Struk Pembayaran':^78}\n")
+                    print("=" * 78)
+                    print(f"Transaksi ID : {transaksi_id}")
+                    print(f"Username     : {transaksi_detail['Username'].iloc[0]}")
+                    print(f"Tanggal      : {transaksi_detail['Tanggal Pembuatan'].iloc[0]}")
+                    print(f"Metode Bayar : {transaksi_detail['Tipe Pembayaran'].iloc[0]}")
+                    print("-" * 78)
+                    print(f"{'Produk':<30} {'Harga':<15} {'Quantitas':<10} {'Subtotal':<15}")
+                    print("-" * 78)
+                    total_harga = 0
+                    for _, row in transaksi_detail.iterrows():
+                        subtotal = row['Harga'] * row['Quantitas']
+                        total_harga += subtotal
+                        print(f"{row['Nama Produk']:<30} {format_rupiah(row['Harga']):<15} {row['Quantitas']:<10} {format_rupiah(subtotal):<15}")
+                    print("-" * 78)
+                    print(f"{'Total Harga':>65}: {format_rupiah(total_harga)}")
+                    print("=" * 78)
+                    print("\n")
+                    input("Tekan enter untuk keluar....")
+                    os.system('cls')
+                else:
+                    os.system('cls')
+                    print(f"\n{'Transaksi tidak ada!! Pilih berdasarkan nomor!!':^78}")
+            except ValueError:
+                os.system('cls')
+                print(f"\n{'Input harus berupa angka!':^78}")
+        elif pilihan == '2':
+            try:
+                transaksi_pilihan = int(input("Pilih transaksi berdasarkan nomor (enter untuk batal): "))
+
+                if 1 <= transaksi_pilihan <= len(daftar_transaksi):
+                    transaksi_id = daftar_transaksi[transaksi_pilihan - 1]
+
+                    status_pembelian = transaksi_df.loc[transaksi_df['Transaksi id'] == transaksi_id, 'Lunas'].iloc[0]
+
+                    transaksi_df.loc[transaksi_df['Transaksi id'] == transaksi_id, 'Lunas'] = not status_pembelian
+                    transaksi_df.to_csv('db/transactions.csv', index=False)
+
+                    os.system('cls')
+                    print(f"\n{'Status pembelian berhasil diubah!':^78}\n")
+                else:
+                    os.system('cls')
+                    print(f"\n{'Transaksi tidak ada!! Pilih berdasarkan nomor!!':^78}")
+            except ValueError:
+                os.system('cls')
+                print(f"\n{'Input harus berupa angka!':^78}")
+        elif pilihan == '3':
+            try:
+                transaksi_pilihan = int(input("Pilih transaksi berdasarkan nomor (enter untuk batal): "))
+
+                if 1 <= transaksi_pilihan <= len(daftar_transaksi):
+                    transaksi_id = daftar_transaksi[transaksi_pilihan - 1]
+
+                    konfirmasi = input(f"Apakah kamu yakin ingin menghapus transaksi dengan ID '{transaksi_id}'? (ya/tidak): ").strip().lower()
+                    if konfirmasi == 'ya':
+                        transaksi_df = transaksi_df[transaksi_df['Transaksi id'] != transaksi_id]
+                        transaksi_df.to_csv('db/transactions.csv', index=False)
+
+                        os.system('cls')
+                        print(f"\n{'Transaksi berhasil dihapus!':^78}\n")
+                    elif konfirmasi == 'tidak':
+                        os.system('cls')
+                        print(f"\n{'Transaksi batal dihapus.':^78}\n")
+                    else:
+                        os.system('cls')
+                        print(f"\n{'Input tidak valid. Pilih antara ya atau tidak.':^78}\n")
+                else:
+                    os.system('cls')
+                    print(f"\n{'Transaksi tidak ada!! Pilih berdasarkan nomor!!':^78}")
+            except ValueError:
+                os.system('cls')
+                print(f"\n{'Input harus berupa angka!':^78}")
+        elif pilihan == '4':
+            os.system('cls')
+            return
+        else:
+            os.system('cls')
+            print(f"\n{'⚠  Pilih menu berdasarkan nomor!! ⚠':^78}\n")
+            continue
+
+
 #Fungsi untuk mengelola pengeluaran
 def daftar_pengeluaran():
     pengeluaran = pd.read_csv('db/pengeluaran.csv')

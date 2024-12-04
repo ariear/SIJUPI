@@ -45,7 +45,7 @@ def addAccount(username = None, password = None, role = None, resetPassword = Fa
         data_akun = pd.read_csv('db/accounts.csv')
         data_akun.loc[data_akun["Username"] == resetPassword, "Password"] = password
         
-        data_akun.to_csv('db/accounts.csv')
+        data_akun.to_csv('db/accounts.csv', index=False)
         return
     
     if role is None:

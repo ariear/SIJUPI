@@ -71,19 +71,39 @@ def tambah_produk():
     Nama, Jenis, Harga, Stock = None, None, None, None
     while True:
         if not Nama:
-            Nama = input("Nama Produk\t: ").strip()
-            if not Nama:
+            Nama = input("Nama Produk\t\t: ").strip()
+            Nama_split = Nama.split(" ")
+            
+            if not Nama :
                 print(f"\n{'⚠  Nama produk tidak boleh kosong ⚠':^78}\n")
                 continue
+            else : 
+                alpha = True
+                for kata in Nama_split :
+                    if kata.isalpha() :
+                        pass
+                    else : 
+                        print(f"\n{'⚠  Inputan hanya berupa huruf! ⚠':^78}\n")
+                        alpha = False
+                        break
+                if not alpha :
+                    Nama = None
+                    continue
         
         if not Jenis:
-            Jenis = input("Jenis\t\t: ").strip()
-            if not Jenis:
-                print(f"\n{'⚠  Jenis produk tidak boleh kosong ⚠':^78}\n")
+            tipe = ["pupuk", "alat"]
+            Jenis = input("Jenis (alat/pupuk)\t: ").strip()
+            if Jenis in tipe : 
+                if not Jenis:
+                    print(f"\n{'⚠  Jenis produk tidak boleh kosong ⚠':^78}\n")
+                    continue
+            else :
+                print(f"\n{'⚠  Jenis produk tidak sesuai ⚠':^78}\n")
+                Jenis = None
                 continue
 
         if Harga is None:
-            Harga_input = input("Harga\t\t: ").strip()
+            Harga_input = input("Harga\t\t\t: ").strip()
             try:
                 Harga = int(Harga_input)
                 if Harga < 0:
@@ -95,7 +115,7 @@ def tambah_produk():
                 continue
 
         if Stock is None:
-            Stock_input = input("Stock\t\t: ").strip()
+            Stock_input = input("Stock\t\t\t: ").strip()
             if Stock_input.isdigit() and int(Stock_input) >= 0:
                 Stock = int(Stock_input)
             else:
@@ -442,6 +462,271 @@ def konfirmasi_pembelian():
         else:
             os.system('cls')
             print(f"\n{'⚠  Input harus ada di menu dan berupa angka! ⚠':^78}\n")
+
+
+#Fungsi untuk mengelola pengeluaran
+def daftar_pengeluaran():
+    pengeluaran = pd.read_csv('db/pengeluaran.csv')
+    pengeluaran.index = pengeluaran.index + 1
+
+    header = "| {:^5} | {:<29} | {:>10} | {:>15} | {:>5} | {:>22} |".format('No', 'Nama Barang', 'Jumlah', 'Harga', 'Total', 'Tanggal')
+    garis = "-"* 105
+
+
+    print("-"*105)
+    print(f"|{' ' * 103}|")
+    print(f"|{'Daftar Pengeluaran Toko':^103}|")
+    print(f"|{' ' * 103}|")
+    print("-"*105)
+
+    print(garis)
+    print(header)
+    print(garis)
+
+    for id, row in pengeluaran.iterrows():
+        print("| {:^5} | {:<29} | {:>10} | {:>15} | {:>5} | {:>22} |".format(id, row['Nama Barang'], row['Jumlah'], row['Harga'], row['Total'], row['Tanggal']))
+        print(garis)
+        
+def kelola_pengeluaran() :
+    os.system('cls')
+    while True:
+        daftar_pengeluaran()
+
+        print("Menu:")
+        print("1. Tambah Data")
+        print("2. Update Data")
+        print("3. Hapus Data")
+        print("4. Keluar")
+        choice = input("Pilih opsi: ")
+        os.system('cls')
+
+        if choice == '1':
+            tambah_pengeluaran()
+        elif choice == '2':
+            update_pengeluaran()
+        elif choice == '3':
+            hapus_pengeluaran()
+        elif choice == '4':
+            break
+        else:
+            print(f"\n{'⚠  Masukkan nomor yang valid! ⚠':^78}\n")
+
+def tambah_pengeluaran():
+    if not os.path.exists('db/pengeluaran.csv'):
+        with open('db/pengeluaran.csv', mode='w', newline='') as file :
+            csv_writer = csv.writer(file)
+            header = ('Nama Barang', 'Jumlah', 'Harga', 'Total', 'Tanggal')
+            csv_writer.writerow(header)
+
+    print("-" * 105)
+    print(f"|{' ' * 103}|")
+    print(f"|{'TAMBAH pengeluaran':^103}|")
+    print(f"|{' ' * 103}|")
+    print("-" * 105)
+
+    Nama, Jumlah, Harga, Total, Tanggal = None, None, None, None, None
+    while True:
+        if not Nama:
+            Nama = input("Nama pengeluaran\t\t: ").strip()
+            Nama_split = Nama.split(" ")
+            
+            if not Nama :
+                print(f"\n{'⚠  Nama pengeluaran tidak boleh kosong ⚠':^78}\n")
+                continue
+            else : 
+                alpha = True
+                for kata in Nama_split :
+                    if kata.isalpha() :
+                        pass
+                    else : 
+                        print(f"\n{'⚠  Inputan hanya berupa huruf! ⚠':^78}\n")
+                        alpha = False
+                        break
+                if not alpha :
+                    Nama = None
+                    continue
+                
+        if Jumlah is None:
+            Jumlah_input = input("Jumlah\t\t\t: ").strip()
+            try:
+                Jumlah = int(Jumlah_input)
+                if Jumlah < 0:
+                    print(f"\n{'⚠  Jumlah harus berupa angka positif ⚠':^78}\n")
+                    Jumlah = None
+                    continue
+            except ValueError:
+                print(f"\n{'⚠  Jumlah harus berupa angka ⚠':^78}\n")
+                continue
+
+        if Harga is None:
+            Harga_input = input("Harga\t\t\t: ").strip()
+            try:
+                Harga = int(Harga_input)
+                if Harga < 0:
+                    print(f"\n{'⚠  Harga harus berupa angka positif ⚠':^78}\n")
+                    Harga = None
+                    continue
+            except ValueError:
+                print(f"\n{'⚠  Harga harus berupa angka ⚠':^78}\n")
+                continue
+
+        if Total is None:
+            Total = Jumlah * Harga
+            
+        if Tanggal is None :
+            Tanggal = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        if Nama and Jumlah and Harga is not None and Total is not None and Tanggal is not None:
+            break
+    
+    with open('db/pengeluaran.csv', mode='a', newline='') as file:
+        csv_writer = csv.writer(file)
+        csv_writer.writerow((Nama, Jumlah, Harga, Total, Tanggal))
+    
+    os.system('cls')
+    print(f"\n{'pengeluaran berhasil ditambahkan!!':^78}\n")
+
+
+def update_pengeluaran():
+    os.system('cls')
+    daftar_pengeluaran()
+    
+    data = pd.read_csv('db/pengeluaran.csv')
+    data.index = data.index + 1
+        
+    try:
+        id_update = int(input("\nPilih pengeluaran untuk diperbarui berdasarkan nomor : "))
+    except ValueError:
+        print("Input harus berupa angka!")
+        return
+    
+    if id_update in data.index:
+        os.system('cls')
+        while True:
+            print(f"\n{'Pengeluaran terpilih: ' + data.loc[id_update, 'Nama Barang']:^78}")
+            print("\nPilih data yang ingin diperbarui :")
+            print("1. Ubah Nama Barang")
+            print("2. Ubah Jumlah")
+            print("3. Ubah Harga")
+            print("4. Ubah Waktu")
+            print("5. Batal")
+            try:
+                choice = int(input("\nPilih berdasarkan nomor : "))
+            except ValueError:
+                os.system('cls')
+                print(f"\n{'Input harus berupa angka! Coba lagi':^78}\n")
+                continue
+
+            if choice == 1:
+                Nama = input("Nama Barang Baru: ")
+                if not Nama.strip():
+                    os.system('cls')
+                    print(f"\n{'Nama barang tidak boleh kosong! Coba lagi':^78}\n")
+                    continue
+                
+                data.loc[id_update, "Nama Barang"] = Nama
+
+                os.system('cls')
+                print(f"\n{'Nama barang berhasil diperbarui menjadi ' + Nama:^78}\n")
+                
+                
+            elif choice == 2:
+                try:
+                    Jumlah = input("Jumlah Baru: ")
+                    if not Jumlah.strip():
+                        raise ValueError("Jumlah tidak boleh kosong!")
+                    Jumlah = int(Jumlah)
+                    data.loc[id_update, "Jumlah"] = Jumlah
+                    data.loc[id_update, "Total"] = data.loc[id_update, "Harga"] * Jumlah
+                    os.system('cls')
+                    print(f"\n{'Jumlah produk berhasil diperbarui menjadi ' + str(Jumlah):^78}\n")
+                except ValueError:
+                    os.system('cls')
+                    print(f"\n{'Jumlah harus berupa angka! Coba lagi':^78}\n")
+                    continue
+    
+    
+            elif choice == 3:
+                try:
+                    Harga = input("Harga Baru: ")
+                    if not Harga.strip():
+                        raise ValueError("Harga tidak boleh kosong!")
+                    Harga = int(Harga)
+                    data.loc[id_update, "Harga"] = Harga
+                    data.loc[id_update, "Total"] = data.loc[id_update, "Jumlah"] * Harga
+                    os.system('cls')
+                    print(f"\n{'Harga produk berhasil diperbarui menjadi ' + str(Harga):^78}\n")
+                except ValueError:
+                        os.system('cls')
+                        print(f"\n{'Harga harus berupa angka! Coba lagi':^78}\n")
+              
+            elif choice == 4 :
+                jawab = ["iya", "tidak"]
+                Tanggal = input("Apakah anda ingin memperbarui waktu?(iya/tidak) : ")
+                if Tanggal in jawab :
+                    if Tanggal == "iya" :
+                        Tanggal = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    else :
+                            print("Silahkan pilih menu lainnya")
+                else :
+                    print("Masukkan jawaban dengan benar!")
+                data.loc[id_update, "Tanggal"] = Tanggal
+                
+            elif choice == 5:
+                os.system('cls')
+                return
+            else:
+                os.system('cls')
+                print(f"\n{'Pilih berdasarkan nomor menu!!':^78}\n")
+                continue
+
+            data.to_csv('db/pengeluaran.csv', index=False)
+            return
+    else:
+        os.system('cls')
+        print(f"Produk yang kamu pilih tidak ada!")
+        return
+
+def hapus_pengeluaran() :
+    while True:
+        daftar_pengeluaran()
+
+        data = pd.read_csv('db/pengeluaran.csv')
+        data.index = data.index + 1
+
+        try:
+            id_del = int(input("\nPilih produk yang ingin dihapus berdasarkan No : "))
+        except ValueError:
+            os.system('cls')
+            print(f"\n{'Input harus berupa angka! Coba lagi.':^78}\n")
+            continue
+
+        answer = ["iya", "tidak"]
+        quest = input("Yakin ingin menghapus produk tersebut? (iya/tidak) : ")
+
+        if quest in answer : 
+            if quest == "iya" :
+                if id_del in data.index :
+                    if id_del in data.index :
+                        data = data.drop(id_del)
+                        data.to_csv('db/pengeluaran.csv', index=False)
+                        
+                        os.system('cls')
+                        print(f"\n{'Produk berhasil dihapus':^78}\n")
+                        break
+                else :
+                    os.system('cls')
+                    print(f"\n{'Produk tidak ada':^78}\n")
+            else :
+                os.system('cls')
+                print(f"\n{'Silahkan pilih menu lainnya':^78}\n")
+                break
+        else :
+            os.system('cls')
+            print(f"\n{'Silahkan pilih menu lainnya':^78}\n")
+            break
+
+#Fungsi untuk menampilkan laporan
 
 
 # Fungsi untuk mengelola akun (akses : Pemilik toko)

@@ -741,7 +741,7 @@ def laporan() :
         if choice == '1':
             lap_penjualan()
         elif choice == '2':
-            print("yes")
+            lap_pengeluaran()
         elif choice == '3':
             break
         else:
@@ -789,6 +789,91 @@ def lap_penjualan():
     except ValueError:
         print("⚠ Format tanggal tidak valid. Harap masukkan dalam format DD-MM-YYYY! ⚠")
         os.system('cls')
+
+def lap_pengeluaran():
+    awal = input("Masukkan tanggal awal (DD-MM-YYYY)\t: ")
+    akhir = input("Masukkan tanggal akhir (DD-MM-YYYY)\t: ")
+    
+    try:
+        tanggal_awal = datetime.strptime(awal, "%d-%m-%Y")
+        tanggal_akhir = datetime.strptime(akhir, "%d-%m-%Y")
+        if tanggal_awal > tanggal_akhir:
+            os.system('cls')
+            print("⚠ Tanggal awal tidak boleh lebih besar dari tanggal akhir! ⚠")
+            return
+        data = pd.read_csv('db/pengeluaran.csv')
+        data.index = data.index + 1
+        data['Tanggal'] = pd.to_datetime(data['Tanggal'], format='%Y-%m-%d %H:%M:%S', errors='coerce')
+        laporan = data[(data['Tanggal'] >= tanggal_awal) & 
+                       (data['Tanggal'] <= tanggal_akhir)]
+        
+        if laporan.empty:
+            os.system('cls')
+            print(f"⚠ Tidak ada pengeluaran antara tanggal {tanggal_awal.date()} dan {tanggal_akhir.date()} ⚠")
+            return
+        print("=" * 78)
+        print(f"{'Laporan Pengeluaran':^78}")
+        print("=" * 78)
+        print(f"Rentang Tanggal: {tanggal_awal.date()} hingga {tanggal_akhir.date()}")
+        print("-" * 78)
+        print(f"{'Nama Barang':<30} {'Jumlah':<10} {'Harga':<10} {'Total':<15} {'Tanggal':<25}")
+        print("-" * 78)
+        total_akhir = 0
+        for index, row in laporan.iterrows():
+            hasil = row['Harga'] * row['Jumlah']
+            total_akhir += hasil
+            print(f"{row['Nama Barang']:<30} {row['Jumlah']:<10} {row['Harga']:<10} {row['Total']:<15} {row['Tanggal']}")
+        print("-" * 78)
+        print(f"{'Total Harga':>65}: {total_akhir}")
+        print("=" * 78)
+    except ValueError:
+        print("⚠ Format tanggal tidak valid. Harap masukkan dalam format DD-MM-YYYY! ⚠")
+        os.system('cls')
+        
+# def lap_pengeluaran():
+#     awal = input("Masukkan tanggal awal (DD-MM-YYYY)\t: ")
+#     akhir = input("Masukkan tanggal akhir (DD-MM-YYYY)\t: ")
+    
+#     try:
+#         tanggal_awal = datetime.strptime(awal, "%Y-%m-%d")
+#         tanggal_akhir = datetime.strptime(akhir, "%Y-%m-%d")
+#         if tanggal_awal > tanggal_akhir:
+#             os.system('cls')
+#             print("⚠ Tanggal awal tidak boleh lebih besar dari tanggal akhir! ⚠")
+#             return
+
+#         data = pd.read_csv('db/pengeluaran.csv')
+#         data.index = data.index + 1
+        
+#         data['Tanggal'] = pd.to_datetime(data['Tanggal'], format='%Y-%m-%d', errors='coerce')
+#         laporan = data[(data['Tanggal'].dt.date >= tanggal_awal) & 
+#                        (data['Tanggal'].dt.date <= tanggal_akhir)]
+        
+#         if laporan.empty:
+#             os.system('cls')
+#             print(f"⚠ Tidak ada pengeluaran antara tanggal {tanggal_awal.date()} dan {tanggal_akhir.date()} ⚠")
+#             return
+
+#         print("=" * 78)
+#         print(f"{'Laporan Pengeluaran':^78}")
+#         print("=" * 78)
+#         print(f"Rentang Tanggal: {tanggal_awal} hingga {tanggal_akhir}")
+#         print("-" * 78)
+#         print(f"{'No':<5} {'Nama Barang':<30} {'Jumlah':<10} {'Harga':<10} {'Total':<15} {'Tanggal':<25}")
+#         print("-" * 78)
+
+#         total_akhir = 0
+#         for index, row in laporan.iterrows():
+#             hasil = row['Harga'] * row['Jumlah']
+#             total_akhir += hasil
+#             print(f"{row['No']:<5} {row['Nama Barang']:<30} {row['Jumlah']:<10} {row['Harga']:<10} {row['Total']:<15} {row['Tanggal']:255}")
+
+#         print("-" * 78)
+#         print(f"{'Total Harga':>65}: {total_akhir}")
+#         print("=" * 78)
+#     except ValueError:
+#         print("⚠ Format tanggal tidak valid. Harap masukkan dalam format DD-MM-YYYY! ⚠")
+#         os.system('cls')
 
 # Fungsi untuk mengelola akun (akses : Pemilik toko)
 def kelola_akun(errorMsg = False, username = False):

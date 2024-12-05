@@ -458,6 +458,9 @@ def konfirmasi_pembelian():
                     transaksi_id_pilih = daftar_transaksi[nomor - 1]
                     transaksi_df.loc[transaksi_df["Transaksi id"] == transaksi_id_pilih, ["Tanggal Konfirmasi", "Konfirmasi", "Lunas"]] = [datetime.now().strftime('%d-%m-%Y'), True, True]
                     transaksi_df.to_csv('db/transactions.csv', index=False)
+                    
+                    username = transaksi_df.loc[transaksi_df["Transaksi id"] == transaksi_id_pilih, "Username"].tolist()
+                    notificationMsg(username, [f"selamat!! pembelian kamu dengan id {transaksi_id_pilih} sudah dikonfirmasi!!"])
 
                     os.system('cls')
                     print(f"\n{'Transaksi ID ' +  transaksi_id_pilih + ' berhasil dikonfirmasi!':^78}\n")

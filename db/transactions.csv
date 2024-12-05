@@ -1,4 +1,4 @@
 Transaksi id,Username,Nama Produk,Harga,Quantitas,Tipe Pembayaran,Tanggal Pembuatan,Tanggal Konfirmasi,Konfirmasi,Lunas
-JPswGu,ariear,Clurit,20000,5,Transfer,29-11-2024,,,
-JPswGu,ariear,Cangkul Gas,70000,2,Transfer,29-11-2024,,,
-xUxKej,TestNotif,Cangkul Gas,70000,5,Cash,03-12-2024,,,
+JPswGu,ariear,Clurit,20000,5,Transfer,29-11-2024,05-12-2024,True,True
+JPswGu,ariear,Cangkul Gas,70000,2,Transfer,29-11-2024,05-12-2024,True,True
+xUxKej,TestNotif,Cangkul Gas,70000,5,Cash,03-12-2024,05-12-2024,True,True

@@ -104,7 +104,7 @@ def menu_utama(data_account):
             print(f"|{'     5. Laporan Penjualan dan Pengeluaran':<78}|")
             print(f"|{'     6. Lihat Notifikasi':<78}|")
             print(f"|{'     7. Kelola akun':<78}|")
-            print(f"|{'     8. Perbarui Nomor Rekening Toko':<78}|")
+            print(f"|{'     8. Perbarui Informasi Toko':<78}|")
             print(f"|{'     9. Info Akun':<78}|")
             print(f"|{'     10. Logout':<78}|")
             print(f"|{' ' * 78}|")

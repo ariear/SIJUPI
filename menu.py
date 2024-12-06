@@ -37,7 +37,7 @@ def menu_awal():
                 if len(menu_auth) == 2:
                     menu_utama(menu_auth)
                     return 'gas menu toko'
-                elif menu_auth == 'keluar':
+                elif menu_auth == 'kembali':
                     os.system('cls')
                     continue
             case '3':

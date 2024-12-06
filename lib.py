@@ -319,6 +319,10 @@ def update_produk(errorMsg=False):
                     os.system('cls')
                     print(f"\n{'Jenis produk tidak boleh kosong! Coba lagi':^78}\n")
                     continue
+                elif not Jenis in ["alat", "pupuk"]:
+                    os.system('cls')
+                    print(f"\n{'Jenis produk harus pupuk atau alat! Coba lagi':^78}\n")
+                    continue
                 pesanNotif = f"Produk {data_lama['Nama Produk']} telah diganti jenisnya menjadi {Jenis}"
                 data.loc[id_update, "Jenis"] = Jenis
 

@@ -100,6 +100,14 @@ def tambah_produk():
                 if not alpha :
                     Nama = None
                     continue
+                
+            data = pd.read_csv('db/products.csv')
+            if Nama in data['Nama Produk'].str.lower().values :
+                print(f"\n{'⚠  Nama produk sudah ada! Gunakan nama lain ⚠':^78}\n")
+                Nama = None
+                continue
+            else:
+                continue
         
         if not Jenis:
             tipe = ["pupuk", "alat"]
@@ -412,8 +420,9 @@ def hapus_produk():
                 break
         else :
             os.system('cls')
-            print(f"\n{'Silahkan pilih menu lainnya':^78}\n")
-            break
+            print(f"\n{'Jawaban harus iya atau tidak':^78}\n")
+            quest = None
+            continue
 
 
 # Fungsi untuk mengkonfirmasi pembelian (akses : admin dan pemilik toko)

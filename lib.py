@@ -83,31 +83,17 @@ def tambah_produk():
     while True:
         if not Nama:
             Nama = input("Nama Produk\t\t: ").strip()
-            Nama_split = Nama.split(" ")
-            
             if not Nama :
                 print(f"\n{'⚠  Nama produk tidak boleh kosong ⚠':^78}\n")
                 continue
             else : 
-                alpha = True
-                for kata in Nama_split :
-                    if kata.isalpha() :
-                        pass
-                    else : 
-                        print(f"\n{'⚠  Inputan hanya berupa huruf! ⚠':^78}\n")
-                        alpha = False
-                        break
-                if not alpha :
+                data = pd.read_csv('db/products.csv')
+                if Nama.lower() in data['Nama Produk'].values :
+                    print(f"\n{'⚠  Nama produk sudah ada! Gunakan nama lain ⚠':^78}\n")
                     Nama = None
                     continue
-                
-            data = pd.read_csv('db/products.csv')
-            if Nama in data['Nama Produk'].str.lower().values :
-                print(f"\n{'⚠  Nama produk sudah ada! Gunakan nama lain ⚠':^78}\n")
-                Nama = None
-                continue
-            else:
-                continue
+                else:
+                    continue
         
         if not Jenis:
             tipe = ["pupuk", "alat"]

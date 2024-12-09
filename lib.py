@@ -93,7 +93,8 @@ def tambah_produk():
                 continue
             else : 
                 data = pd.read_csv('db/products.csv')
-                if Nama.lower() in data['Nama Produk'].values :
+                nama_produk = data['Nama Produk'].str.lower().values
+                if Nama.lower() in nama_produk :
                     print(f"\n{'⚠  Nama produk sudah ada! Gunakan nama lain ⚠':^78}\n")
                     Nama = None
                     continue

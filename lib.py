@@ -18,17 +18,6 @@ def baca_info_toko():
     return toko
 
 # Fungsi untuk menampilkan data produk
-def get_len(judul: str, data: list) -> int:
-    return max(len(str(judul)), max(len(str(item)) for item in data))
-
-def tampilkan_data(data, kolom, max_len):
-    for row in data:
-        nama = str(row[0]).ljust(max_len)
-        print(nama, end=" ")
-        for index, value in enumerate(row[1:], start=1):
-            print(f"| {str(value).ljust(len(kolom[index]))}", end=" ")
-        print()
-        
 def daftarBarang(judul_laporan: str) -> int:
     data = pd.read_csv('db/products.csv')
     data.index = data.index + 1

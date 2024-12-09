@@ -459,7 +459,7 @@ def konfirmasi_pembelian():
                     transaksi_df.to_csv('db/transactions.csv', index=False)
                     
                     username = transaksi_df.loc[transaksi_df["Transaksi id"] == transaksi_id_pilih, "Username"].tolist()
-                    notificationMsg(username, [f"selamat!! pembelian kamu dengan id {transaksi_id_pilih} sudah dikonfirmasi!!"])
+                    notificationMsg([username[0]], [f"selamat!! pembelian kamu dengan id {transaksi_id_pilih} sudah dikonfirmasi!!"])
 
                     os.system('cls')
                     print(f"\n{'Transaksi ID ' +  transaksi_id_pilih + ' berhasil dikonfirmasi!':^78}\n")
@@ -1375,6 +1375,20 @@ def info_akun(username):
                         if accounts[accounts['Username'] == new_username].empty or new_username == account['Username']:
                             accounts.loc[accounts['Username'] == username, 'Username'] = new_username
                             accounts.to_csv('db/accounts.csv', index=False)
+
+                            notifications = pd.read_csv('db/notifications.csv')
+                            notifications.loc[notifications['Username'] == username, 'Username'] = new_username
+                            
+                            transactions = pd.read_csv('db/transactions.csv')
+                            transactions.loc[transactions['Username'] == username, 'Username'] = new_username
+                            
+                            wishlists = pd.read_csv('db/wishlists.csv')
+                            wishlists.loc[wishlists['Username'] == username, 'Username'] = new_username
+                            
+                            notifications.to_csv('db/notifications.csv', index=False)
+                            transactions.to_csv('db/transactions.csv', index=False)
+                            wishlists.to_csv('db/wishlists.csv', index=False)
+
                             username = new_username
                             print("\nUsername berhasil diperbarui!")
                             break

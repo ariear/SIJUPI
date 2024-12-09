@@ -18,40 +18,39 @@ def baca_info_toko():
     return toko
 
 # Fungsi untuk menampilkan data produk
-def daftarBarang(judul_laporan: str) -> int:
+def daftarBarang():
     data = pd.read_csv('db/products.csv')
     data.index = data.index + 1
     kolom = data.columns.tolist()
     data = data.values.tolist()
 
-    max_len_no = len("No")
     max_len_produk = max(len(kolom[0]), max(len(str(row[0])) for row in data))
     max_len_jenis = max(len(kolom[1]), max(len(str(row[1])) for row in data))
-    max_len_harga = max(len(kolom[2]), max(len(str(row[2])) for row in data))
+    max_len_harga = max(len(kolom[2]), max(len(str(row[2])) for row in data)) + 5
     max_len_stock = max(len(kolom[3]), max(len(str(row[3])) for row in data))
     
-    total_width = max_len_no + 4 + max_len_produk + 4 + max_len_jenis + 4 + max_len_harga + 4 + max_len_stock + 3
+    total_width = 80
     header_format = "| {:^5} | {:<{}} | {:<{}} | {:>{}} | {:>{}} |"
     line_format = "| {:^5} | {:<{}} | {:<{}} | {:>{}} | {:>{}} |"
     garis_pemisah = "-" * total_width
+
     print(garis_pemisah)
-    print("|{:^{}}|".format(" ", total_width - 2))
-    print("|{:^{}}|".format(judul_laporan, total_width - 2))
-    print("|{:^{}}|".format(" ", total_width - 2))
+    print(f"|{' ' * (total_width - 2)}|")
+    print(f"|{'Daftar Pupuk dan Alat Pertanian':^{total_width - 2}}|")
+    print(f"|{' ' * (total_width - 2)}|")
     print(garis_pemisah)
-    print(f"{garis_pemisah}")
     print(header_format.format("No", kolom[0], max_len_produk, "Jenis", max_len_jenis, "Harga", max_len_harga, "Stock", max_len_stock))
     print(garis_pemisah)
     for index, row in enumerate(data, start=1):
         print(line_format.format(index, row[0], max_len_produk, row[1], max_len_jenis, row[2], max_len_harga, row[3], max_len_stock))
     print(garis_pemisah)
     
+    
 # Fungsi untuk mengelola produk (akses : admin dan pemilik toko)
 def kelola_produk() :
     os.system('cls')
     while True:
-        judul_laporan = "Daftar Pupuk dan Alat Pertanian"
-        daftarBarang(judul_laporan)
+        daftarBarang()
 
         print("\nMenu:")
         print("1. Tambah Produk")
@@ -277,8 +276,7 @@ def update_produk(errorMsg=False):
     if errorMsg:
         print(f"\n{errorMsg:^78}\n")
 
-    judul_laporan = "Daftar Pupuk dan Alat Pertanian"
-    daftarBarang(judul_laporan)
+    daftarBarang()
 
     data = pd.read_csv('db/products.csv')
     data_wishlist = pd.read_csv('db/wishlists.csv')
@@ -385,8 +383,7 @@ def update_produk(errorMsg=False):
     
 def hapus_produk():
     while True:
-        judul_laporan = "Daftar Pupuk dan Alat Pertanian"
-        daftarBarang(judul_laporan)
+        daftarBarang()
 
         data = pd.read_csv('db/products.csv')
         data.index = data.index + 1

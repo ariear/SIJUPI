@@ -162,7 +162,13 @@ def notificationMsg(penerima = False, pesan = False):
 
 def cek_notif_transaksi_admin(username):
     data_transaksi = pd.read_csv('db/transactions.csv')
-    transaksi_belum_konfirmasi = len(data_transaksi[data_transaksi["Konfirmasi"].isnull()])
+    data_transaksi_belum_konfirmasi = data_transaksi.loc[data_transaksi["Konfirmasi"].isnull(), "Transaksi id"].tolist()
+    data_untuk_notif = []
+    for id in data_transaksi_belum_konfirmasi:
+        if id in data_untuk_notif:
+            continue
+        data_untuk_notif.append(id)
+    transaksi_belum_konfirmasi = len(data_untuk_notif)
     notificationMsg([username], [f"Ada {transaksi_belum_konfirmasi} transaksi yang sedang menunggu konfirmasi!"])
     return
 

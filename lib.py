@@ -18,34 +18,51 @@ def baca_info_toko():
     return toko
 
 # Fungsi untuk menampilkan data produk
-def daftarBarang():
-    daftar_produk = pd.read_csv('db/products.csv')
-    daftar_produk.index = daftar_produk.index + 1
+def get_len(judul: str, data: list) -> int:
+    return max(len(str(judul)), max(len(str(item)) for item in data))
 
-    header = "| {:^5} | {:^29} | {:^10} | {:^15} | {:^5} |".format("No", "Nama Produk", "Jenis", "Harga", "Stok")
-    garis = "-"* 79
+def tampilkan_data(data, kolom, max_len):
+    for row in data:
+        nama = str(row[0]).ljust(max_len)
+        print(nama, end=" ")
+        for index, value in enumerate(row[1:], start=1):
+            print(f"| {str(value).ljust(len(kolom[index]))}", end=" ")
+        print()
+        
+def daftarBarang(judul_laporan: str) -> int:
+    data = pd.read_csv('db/products.csv')
+    data.index = data.index + 1
+    kolom = data.columns.tolist()
+    data = data.values.tolist()
 
-
-    print("-"*80)
-    print(f"|{' ' * 78}|")
-    print(f"|{'Daftar Pupuk dan Alat Pertanian':^78}|")
-    print(f"|{' ' * 78}|")
-    print("-"*80)
-
-    print(garis)
-    print(header)
-    print(garis)
-
-    for id, row in daftar_produk.iterrows():
-        print("| {:^5} | {:<29} | {:>10} | {:>15} | {:>5} |".format(id, row['Nama Produk'], row['Jenis'], format_rupiah(row['Harga']), row['Stock']))
-        print(garis)
-
-
+    max_len_no = len("No")
+    max_len_produk = max(len(kolom[0]), max(len(str(row[0])) for row in data))
+    max_len_jenis = max(len(kolom[1]), max(len(str(row[1])) for row in data))
+    max_len_harga = max(len(kolom[2]), max(len(str(row[2])) for row in data))
+    max_len_stock = max(len(kolom[3]), max(len(str(row[3])) for row in data))
+    
+    total_width = max_len_no + 4 + max_len_produk + 4 + max_len_jenis + 4 + max_len_harga + 4 + max_len_stock + 3
+    header_format = "| {:^5} | {:<{}} | {:<{}} | {:>{}} | {:>{}} |"
+    line_format = "| {:^5} | {:<{}} | {:<{}} | {:>{}} | {:>{}} |"
+    garis_pemisah = "-" * total_width
+    print(garis_pemisah)
+    print("|{:^{}}|".format(" ", total_width - 2))
+    print("|{:^{}}|".format(judul_laporan, total_width - 2))
+    print("|{:^{}}|".format(" ", total_width - 2))
+    print(garis_pemisah)
+    print(f"{garis_pemisah}")
+    print(header_format.format("No", kolom[0], max_len_produk, "Jenis", max_len_jenis, "Harga", max_len_harga, "Stock", max_len_stock))
+    print(garis_pemisah)
+    for index, row in enumerate(data, start=1):
+        print(line_format.format(index, row[0], max_len_produk, row[1], max_len_jenis, row[2], max_len_harga, row[3], max_len_stock))
+    print(garis_pemisah)
+    
 # Fungsi untuk mengelola produk (akses : admin dan pemilik toko)
 def kelola_produk() :
     os.system('cls')
     while True:
-        daftarBarang()
+        judul_laporan = "Daftar Pupuk dan Alat Pertanian"
+        daftarBarang(judul_laporan)
 
         print("\nMenu:")
         print("1. Tambah Produk")
@@ -271,7 +288,8 @@ def update_produk(errorMsg=False):
     if errorMsg:
         print(f"\n{errorMsg:^78}\n")
 
-    daftarBarang()
+    judul_laporan = "Daftar Pupuk dan Alat Pertanian"
+    daftarBarang(judul_laporan)
 
     data = pd.read_csv('db/products.csv')
     data_wishlist = pd.read_csv('db/wishlists.csv')
@@ -378,7 +396,8 @@ def update_produk(errorMsg=False):
     
 def hapus_produk():
     while True:
-        daftarBarang()
+        judul_laporan = "Daftar Pupuk dan Alat Pertanian"
+        daftarBarang(judul_laporan)
 
         data = pd.read_csv('db/products.csv')
         data.index = data.index + 1
